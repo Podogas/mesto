@@ -21,63 +21,75 @@
     <main class="content">
    
 
-<!-- profile -->
-  <section class="profile">
-    <div class="profile__avatar"></div>
-    <div class="profile__info">
-      <h1 class="profile__title">Жак-Ив Кусто</h1><div class="profile__edit-button"></div> <!-- раньше я думал что пробелы в разметке не учитываются, но тут видимо исключительный случай, если поставить пробел в разметке, то на странице кнопка отъедет вправо-->
-      <p class="profile__subtitle">Исследователь океана</p>
-    </div>
-    <div class="profile__add-button"></div>
-  </section>
+    <!-- profile -->
+      <section class="profile">
+        <div class="profile__avatar"></div>
+        <div class="profile__info">
+          <h1 class="profile__name">Жак-Ив Кусто</h1><div class="profile__edit-button"></div> <!-- раньше я думал что пробелы в разметке не учитываются, но тут видимо исключительный случай, если поставить пробел в разметке, то на странице кнопка отъедет вправо-->
+          <p class="profile__job">Исследователь океана</p>
+        </div>
+        <div class="profile__add-button"></div>
+      </section>
 
 
-<!-- elements -->
-  <section class="elements">
-    <article class="element">
-      <div class="element__image element__image_content_1"></div>
-      <p class="element__caption">Карачаевск
-        <span class="element__like-button"></span>
-      </p>
-    </article>
-    <article class="element">
-      <div class="element__image element__image_content_2"></div>
-      <p class="element__caption">Гора Эльбрус
-        <span class="element__like-button"></span>
-      </p>
-    </article>
-    <article class="element">
-      <div class="element__image element__image_content_3"></div>
-      <p class="element__caption">Домбай
-        <span class="element__like-button"></span>
-      </p>
-    </article>
-    <article class="element">
-      <div class="element__image element__image_content_4"></div>
-      <p class="element__caption">Камчатка
-        <span class="element__like-button"></span>
-      </p>
-    </article>
-    <article class="element">
-      <div class="element__image element__image_content_5"></div>
-      <p class="element__caption">Москва
-        <span class="element__like-button"></span>
-      </p>
-    </article>
-    <article class="element">
-      <div class="element__image element__image_content_6"></div>
-      <p class="element__caption">Тбилиси
-        <span class="element__like-button"></span>
-      </p>
-    </article>      
-  </section>
-</main>
+    <!-- elements -->
+      <section class="elements">
+        <article class="element">
+          <div class="element__image element__image_content_1"></div>
+          <p class="element__caption">Карачаевск
+            <span class="element__like-button"></span>
+          </p>
+        </article>
+        <article class="element">
+          <div class="element__image element__image_content_2"></div>
+          <p class="element__caption">Гора Эльбрус
+            <span class="element__like-button"></span>
+          </p>
+        </article>
+        <article class="element">
+          <div class="element__image element__image_content_3"></div>
+          <p class="element__caption">Домбай
+            <span class="element__like-button"></span>
+          </p>
+        </article>
+        <article class="element">
+          <div class="element__image element__image_content_4"></div>
+          <p class="element__caption">Камчатка
+            <span class="element__like-button"></span>
+          </p>
+        </article>
+        <article class="element">
+          <div class="element__image element__image_content_5"></div>
+          <p class="element__caption">Москва
+            <span class="element__like-button"></span>
+          </p>
+        </article>
+        <article class="element">
+          <div class="element__image element__image_content_6"></div>
+          <p class="element__caption">Тбилиси
+            <span class="element__like-button"></span>
+          </p>
+        </article>      
+      </section>
+    </main>
 
 
-<!-- footer -->
-<footer class="footer">
-  <p class="footer__copyright">&#xa9; Александр Подогас</p>
-</footer>
+    <!-- footer -->
+    <footer class="footer">
+      <p class="footer__copyright">&#xa9; Александр Подогас</p>
+    </footer>
+    <section class="popup">
+      <div class="profile-form">
+        <div class="profile-form__close-btn"></div>
+        <h2 class="profile-form__heading">Редактировать профиль</h2>
+        <form  class="profile-form__input-container">
+          <input type="text" required class="profile-form__item profile-form__item_el_name" placeholder="Имя" value="">
+          <input type="text" required class="profile-form__item profile-form__item_el_job" placeholder="Подпись" value="">
+          <button type="submit" class="profile-form__submit-btn">Сохранить</button>
+        </form>
+      </div>
+    </section>
   </div>
+  <script type="text/javascript" src="./js/script.js"></script>
 </body>
 </html>

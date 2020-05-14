@@ -1,0 +1,27 @@
+.profile-form__close-btn  {
+  position: absolute;
+  top: -35px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  background: url('../../../images/close-icon.svg') no-repeat;
+}
+.profile-form__close-btn:hover  {
+  opacity: .6;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 630px) {
+  .profile-form__close-btn {
+    transform: scale(.7);
+    filter: invert(1);
+    top: 0;
+    right: 0;
+  }
+}
+
+@media screen and (max-width: 466px) {
+  .profile-form__close-btn {
+    transform: scale(.5);
+  }
+}

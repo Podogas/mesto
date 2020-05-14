@@ -1,8 +1,13 @@
 .profile__info  {
   padding-left: 32px;
+  width: 60%;
 }
-
+@media screen and (max-width: 1120px) {
+.profile__info  {
+  width: 65%;
+}
 @media screen and (max-width: 705px) {
 .profile__info  {
+  width: 100%;
   padding-left: 0;
 }
