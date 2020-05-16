@@ -2,18 +2,16 @@
 
 .header  {
   width: 68.8%;
+  max-width: 990px;
   min-width: 300px;
-  height: 9.3vw;
-  min-height: 84px;
-  max-height: 119px;
+  min-height: 73px;
   margin: 0 auto;
   padding-top: 45px;
-  box-sizing: border-box;
   border-bottom: 1px solid rgba(84, 84, 84, .7);
 }
- @media screen and (min-width: 1440px) {
+ @media screen and (max-width: 705px) {
   .header  {
-    max-width: 990px;
+    min-height: 56px;
   }
 }
 @media screen and (max-width:514px) {
@@ -21,10 +19,9 @@
     padding-top: 8.75%;
   }
 }
-@media screen and (max-width:374px) {
+@media screen and (max-width:354px) {
   .header  {
     width: 100%;
     margin:0 ;
-    padding-left: 27px;
   }
 }

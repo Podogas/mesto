@@ -10,3 +10,8 @@
   min-height: 25px;
   
 }
+
+@media screen and (max-width:354px) {
+  .header__logo  {
+    margin-left: 27px;
+  }

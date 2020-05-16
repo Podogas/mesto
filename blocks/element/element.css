@@ -3,13 +3,26 @@
 @import url('./__like-button/element__like-button.css');
 
 .element  {
-  min-width: 32.046%;
-  margin-right: calc(3.8% / 2);
+  width: 32.046%;
+  margin-right: calc(3.85% / 2);
   margin-bottom: 21px;
   color: #000000;
   background-color: #FFFFFF;
   border-radius: 10px;
   overflow: hidden;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  -o-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .element:nth-child(3n) {

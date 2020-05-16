@@ -12,7 +12,7 @@
   display: -o-flex;
   display: flex;
   padding-top: 40px;
-  padding-bottom: 50px;
+  padding-bottom: 52px;
   flex-wrap: wrap;
   -ms-align-items: center;
   align-items: center;
@@ -22,7 +22,7 @@
 @media screen and (max-width: 705px) {
   .profile  {
     text-align: center;
-    padding-top: 42px;
-    padding-bottom: 2px;
+    padding-top: 40px;
+    padding-bottom: 4px;
   }
 }

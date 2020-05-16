@@ -23,52 +23,48 @@
 
     <!-- profile -->
       <section class="profile">
-        <div class="profile__avatar"></div>
+        <div class="profile__avatar" style="background-image: url('../../../images/profile-avatar.jpg');"></div>
+        <!-- Мне сказали что здесь можно прописывать изображение инлайн стилями -->
         <div class="profile__info">
-          <h1 class="profile__name">Жак-Ив Кусто</h1><div class="profile__edit-button"></div> <!-- раньше я думал что пробелы в разметке не учитываются, но тут видимо исключительный случай, если поставить пробел в разметке, то на странице кнопка отъедет вправо-->
+          <h1 class="profile__name">Жак-Ив Кусто</h1>
+          <button class="profile__edit-button" type="button"></button>
           <p class="profile__job">Исследователь океана</p>
         </div>
-        <div class="profile__add-button"></div>
+        <button class="profile__add-button" type="button"></button>
       </section>
 
 
     <!-- elements -->
       <section class="elements">
         <article class="element">
-          <div class="element__image element__image_content_1"></div>
-          <p class="element__caption">Карачаевск
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/karachaevsk.jpg)"></div>
+          <h3 class="element__caption">Карачаевск</h3>
+          <button class="element__like-button" type="button"></button><!-- тут мне тоже разрешили инлайн стили) -->
         </article>
         <article class="element">
-          <div class="element__image element__image_content_2"></div>
-          <p class="element__caption">Гора Эльбрус
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/elbrus.jpg)"></div>
+          <h3 class="element__caption">Гора Эльбрус</h3>
+          <button class="element__like-button" type="button"></button>
         </article>
         <article class="element">
-          <div class="element__image element__image_content_3"></div>
-          <p class="element__caption">Домбай
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/dombye.jpg)"></div>
+          <h3 class="element__caption">Домбай</h3>
+          <button class="element__like-button" type="button"></button>
         </article>
         <article class="element">
-          <div class="element__image element__image_content_4"></div>
-          <p class="element__caption">Камчатка
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/CUMchatka.jpg)"></div>
+          <h3 class="element__caption">Камчатка</h3>
+          <button class="element__like-button" type="button"></button>
         </article>
         <article class="element">
-          <div class="element__image element__image_content_5"></div>
-          <p class="element__caption">Москва
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/moscow.jpg)"></div>
+          <h3 class="element__caption">Москва</h3>
+          <button class="element__like-button" type="button"></button>
         </article>
         <article class="element">
-          <div class="element__image element__image_content_6"></div>
-          <p class="element__caption">Тбилиси
-            <span class="element__like-button"></span>
-          </p>
+          <div class="element__image" style="background-image: url(./images/tbilisi.jpg)"></div>
+          <h3 class="element__caption">Тбилиси</h3>
+          <button class="element__like-button" type="button"></button>
         </article>      
       </section>
     </main>
@@ -78,18 +74,20 @@
     <footer class="footer">
       <p class="footer__copyright">&#xa9; Александр Подогас</p>
     </footer>
+
+    <!-- popup -->
     <section class="popup">
-      <div class="profile-form">
-        <div class="profile-form__close-btn"></div>
-        <h2 class="profile-form__heading">Редактировать профиль</h2>
-        <form  class="profile-form__input-container">
-          <input type="text" required class="profile-form__item profile-form__item_el_name" placeholder="Имя" value="">
-          <input type="text" required class="profile-form__item profile-form__item_el_job" placeholder="Подпись" value="">
-          <button type="submit" class="profile-form__submit-btn">Сохранить</button>
+      <div class="popup__profile-form">
+        <button class="popup__close-btn" type="button"></button>
+        <h2 class="popup__heading">Редактировать профиль</h2>
+        <form  class="popup__input-container" name="profile-form" method="post" action="">
+          <input type="text" required class="popup__input-item popup__input-item_el_name" placeholder="Имя" value="">
+          <input type="text" required class="popup__input-item popup__input-item_el_job" placeholder="Подпись" value="">
+          <button type="submit" class="popup__submit-btn">Сохранить</button>
         </form>
       </div>
     </section>
   </div>
-  <script type="text/javascript" src="./js/script.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>
