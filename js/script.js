@@ -12,7 +12,7 @@ let profile = {
   name: document.querySelector('.profile__name'),
   job: document.querySelector('.profile__job')
 }
-/*это объект с информацией о пользователе*/
+/*это объект с информацией о пользователе.*/
 
 
 function togglePopup() {
