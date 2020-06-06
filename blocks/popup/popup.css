@@ -5,9 +5,10 @@
 @import url('./__profile-form/popup__profile-form.css');
 @import url('./__submit-btn/popup__submit-btn.css');
 
+
 .popup  {
-  position: fixed;
   display: none;
+  position: fixed;
   justify-content: center;
   -ms-align-items: center;
   align-items: center;

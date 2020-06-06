@@ -1,0 +1,16 @@
+@import url('./__image/photo-browsing__image.css');
+@import url('./__caption/photo-browsing__caption.css');
+@import url('./__close-btn/photo-browsing__close-btn.css');
+@import url('./__browser/photo-browsing__browser.css');
+.photo-browsing {
+  position: fixed;
+  display: none;
+  justify-content: center;
+  -ms-align-items: center;
+  align-items: center;
+  width: 100%;
+  height:100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .5);
+}
