@@ -1,9 +1,9 @@
 
 .popup_opened  {
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
+  visibility: visible;
+  opacity: 1;
+  height: 100vh;
+  transition: visibility 0s, opacity .5s, height 0s 0s linear;
+  
   
 }

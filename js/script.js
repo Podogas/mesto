@@ -1,10 +1,8 @@
 const profileEditBtn = document.querySelector('.profile__edit-button');
 const profileAddBtn = document.querySelector('.profile__add-button');
 const popup = document.querySelector('.popup');
-const popupHeading = popup.querySelector('.popup__heading');
 const popupForm = popup.querySelector('.popup__input-container');
 const closePopupBtn = popup.querySelector('.popup__close-btn');
-const popupSubmitBtn = popupForm.querySelector('.popup__submit-btn');
 const photoBrowsing = document.querySelector('.photo-browsing');
 const photoBrowsingImage = photoBrowsing.querySelector('.photo-browsing__image');
 const photoBrowsingCaption = photoBrowsing.querySelector('.photo-browsing__caption');
@@ -13,7 +11,7 @@ const photoBrowsingCloseBtn = photoBrowsing.querySelector('.photo-browsing__clos
 const photoCard = document.querySelector('#photo-card').content;
 /*здесь мы получаем содержимое темплейта для карточек с фото*/ 
 const popupInputs = Array.from(popupForm.children).filter(function (item) {
-    return item.type == 'text';
+    return item.type;
 });
 /*Здесь мы создаем массив текстовых полей ввода из псевдомассива детей формы задумка в том что бы в будущем при создании
 дополнительных полей нам можно было их просто выбирать*/
@@ -21,7 +19,7 @@ const popupInputs = Array.from(popupForm.children).filter(function (item) {
 const profile = {
   name: document.querySelector('.profile__name'),
   job: document.querySelector('.profile__job')
-}
+};
 /*это объект с информацией о пользователе.*/
 
 const initialCards = [
@@ -55,78 +53,13 @@ const initialCards = [
 
 
 
-
-
-
-
-var opacity = 0;
-/*не смог придумать ничего лучше этих ужасных вещей, visibility будет мешать людям со скрин ридером по идее*/
 function togglePopup() {  
 popup.classList.toggle('popup_opened');
-  if (popup.classList.contains('popup_opened')) {
-    function fadeIn() {
-     if (opacity<1) {
-        opacity += 0.03;
-        setTimeout(function(){fadeIn()},1);
-        popup.style.opacity = opacity;
-        popup.style.display = 'flex';
-      }
-      if  (opacity > 0.99) {
-        popup.style.opacity = 1;
-        popup.style.display = 'flex';
-      } 
-    }
-      fadeIn();
-  }    else {
-    function fadeOut() {
-      if (opacity > 0) {
-        opacity -= 0.03;
-        setTimeout(function(){fadeOut()},1);
-        popup.style.opacity = opacity;
-        popup.style.display = 'flex';
-      } 
-      if  (opacity < 0) {
-        popup.style.opacity = 0;
-        popup.style.display = 'none';
-      }
-    } 
-    fadeOut();
-  } 
 }
  
 
 function togglePhotoBrowser(){
   photoBrowsing.classList.toggle('photo-browsing_opened');
-
-  if (photoBrowsing.classList.contains('photo-browsing_opened')) {
-    function fadeIn() {
-     if (opacity<1) {
-        opacity += 0.03;
-        setTimeout(function(){fadeIn()},1);
-        photoBrowsing.style.opacity = opacity;
-        photoBrowsing.style.display = 'flex';
-      } 
-      if  (opacity > 0.99) {
-        photoBrowsing.style.opacity = 1;
-        photoBrowsing.style.display = 'flex';
-      }
-    }
-      fadeIn();
-  }    else {
-    function fadeOut() {
-      if (opacity > 0) {
-        opacity -= 0.03;
-        setTimeout(function(){fadeOut()},1);
-        photoBrowsing.style.opacity = opacity;
-        photoBrowsing.style.display = 'flex';
-      } 
-      if  (opacity < 0) {
-        photoBrowsing.style.opacity = 0;
-        photoBrowsing.style.display = 'none';
-      }
-    } 
-    fadeOut();
-  } 
 }
 
 initialCards.forEach(function (cardItem) {
@@ -151,7 +84,7 @@ initialCards.forEach(function (cardItem) {
     })
     /*поставить класс*/
     cardImage.addEventListener('click', function(evt){
-      let imageUrl = evt.target.style.backgroundImage.slice(5, -2);
+      const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
       photoBrowsingImage.setAttribute('src', imageUrl);
       photoBrowsingCaption.textContent = cardItem.name;
       togglePhotoBrowser();
@@ -160,15 +93,6 @@ initialCards.forEach(function (cardItem) {
   }) 
   
 
-
-
-
-
-
-
-
-
-
 function editProfile() {
   popupInputs[0].value= profile.name.textContent;
   popupInputs[0].placeholder= 'Имя';
@@ -176,7 +100,10 @@ function editProfile() {
   popupInputs[1].value= profile.job.textContent;
   popupInputs[1].placeholder= 'Подпись';
   popupInputs[1].name= 'profile-edit-input';
-
+  popupInputs[2].classList.remove('popup__submit-btn_add-image');
+  popupInputs[2].classList.add('popup__submit-btn_edit-profile');
+  popupInputs[2].removeEventListener('click', formSubmitAddPhoto);
+  popupInputs[2].addEventListener('click', formSubmitProfile);
   togglePopup();
 }
 
@@ -187,32 +114,31 @@ function addPhoto() {
   popupInputs[1].value='';
   popupInputs[1].placeholder= 'Ссылка на картинку';
   popupInputs[1].name= 'add-image-input';
-
+  popupInputs[2].classList.remove('popup__submit-btn_edit-profile');
+  popupInputs[2].classList.add('popup__submit-btn_add-image');
+  popupInputs[2].removeEventListener('click', formSubmitProfile);
+  popupInputs[2].addEventListener('click', formSubmitAddPhoto);
   togglePopup();
 }
 
 
-
-
-
-
-
-
-
-
-
-
-function formSubmitHandler (evt) {
+function formSubmitProfile (evt) {
   evt.preventDefault();
 
  if  ((popupInputs[0].value.trim().length > 0) && (popupInputs[1].value.trim().length > 0)) {
-        console.log(1);
-        if (popupInputs[0].name && popupInputs[1].name == ('profile-edit-input')) {
           profile.name.textContent = popupInputs[0].value;
           profile.job.textContent = popupInputs[1].value;
-        } 
-        if (popupInputs[0].name && popupInputs[1].name == ('add-image-input')) {
-          let newCard = 
+        } else {
+        alert("Пожалуйста заполните все поля");
+      }
+    togglePopup();  
+};  
+
+function formSubmitAddPhoto(evt) {
+  evt.preventDefault();
+
+ if  ((popupInputs[0].value.trim().length > 0) && (popupInputs[1].value.trim().length > 0)) {
+          const newCard = 
             {
              name: popupInputs[0].value.trim(),
              link: popupInputs[1].value.trim()
@@ -233,7 +159,7 @@ function formSubmitHandler (evt) {
           /*добавляем содержимое из объекта*/
           document.querySelector('.elements').prepend(cardElement);
           /*добавляем разметку на страницу*/
-          deleteCard.addEventListener('click', function(evt){console.log(1);
+          deleteCard.addEventListener('click', function(evt){
           evt.target.parentElement.remove(); 
           })
           /* удаляем карточку со страницы*/
@@ -241,22 +167,20 @@ function formSubmitHandler (evt) {
           evt.target.classList.toggle('element__like-button_liked')
           })
           /*поставить класс*/
-           cardImage.addEventListener('click', function(evt){
-            photoBrowsingImage.setAttribute('src', newCard.link );
-            photoBrowsingCaption.textContent = newCard.name;
-            togglePhotoBrowser();
-    })
-}
-        
-        togglePopup();
-      } else {
+          cardImage.addEventListener('click', function(evt){
+      const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
+      photoBrowsingImage.setAttribute('src', imageUrl);
+      photoBrowsingCaption.textContent = newCard.name;
+      togglePhotoBrowser();
+    }
+        )} else {
         alert("Пожалуйста заполните все поля");
       }
+    togglePopup();  
+};     
 
-  } 
 
 profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 closePopupBtn.addEventListener('click', togglePopup);
-popupSubmitBtn.addEventListener('click', formSubmitHandler);
 photoBrowsingCloseBtn.addEventListener('click' , togglePhotoBrowser);
