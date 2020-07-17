@@ -15,9 +15,7 @@
   outline: none;
 }
 
-.popup__input-item:invalid {
-  border-bottom: 1px solid red;
-}
+
 @media screen and (max-width: 630px) {
   .popup__input-item {
     font-size: 10px;
