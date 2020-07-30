@@ -1,48 +1,57 @@
-const inputError1 = document.querySelector(`#${popupInput1.id}-err`);
-const inputError2 = document.querySelector(`#${popupInput2.id}-err`);
-/*обявляем ошибки именно в этом файле, так как они нигде кроме как тут не будут использоваться(скорее всего)*/
-
-  function enableValidation(inputs) {
-    if(inputs !== popupForm){
-      inputError1.textContent = '';
-      inputError2.textContent = '';
-      popupInput1.classList.remove('popup__input-item_invalid')
-      popupInput2.classList.remove('popup__input-item_invalid');
-      if(document.activeElement=== popupInput1 || document.activeElement=== popupInput2){
-        popupInput1.classList.add('popup__input-item_invalid');
-        inputError1.textContent = popupInput1.validationMessage;
-        if (popupInput1.validationMessage === ''){
-          popupInput1.classList.remove('popup__input-item_invalid');
-        }
-        popupInput2.classList.add('popup__input-item_invalid');
-        inputError2.textContent = popupInput2.validationMessage;
-        if (popupInput2.validationMessage === ''){
-          popupInput2.classList.remove('popup__input-item_invalid');
-        }
-      }   
-    }
+const hasInvalidInput = (inputList) =>{
+  const result = inputList.some(inputEl => {
+    return !inputEl.validity.valid;
+  })
+  return result
+};
+const toggleBtnState = (inputList , popupSubmitBtn) => {
+  if(hasInvalidInput(inputList)){
+    popupSubmitBtn.classList.add('popup__submit-btn_blocked');
+    popupSubmitBtn.removeEventListener('click', submitPopupForm);
+  } else {
+    popupSubmitBtn.classList.remove('popup__submit-btn_blocked');
+    popupSubmitBtn.addEventListener('click', submitPopupForm);
   }
-  /*тут к сожалению получается так что классы добавляются
-  при каждом изменении поля инпута, но к сожалению более изящного решения придуумать не удалось.*/
+};
 
-  function validityState(inputs, state) {
-    if (!state) {
-      popupSubmitButton.classList.add('popup__submit-btn_blocked');
-      enableValidation(inputs)
-    } else {
-      popupSubmitButton.classList.remove('popup__submit-btn_blocked');
-      popupInput1.classList.remove('popup__input-item_invalid');
-      popupInput2.classList.remove('popup__input-item_invalid');
-      inputError1.textContent = '';
-      inputError2.textContent = '';
-    }
-  }
+function  showInputErr(inputEl)  {
+  /*находим спан с ошибкой*/
+  const errElement = popupForm.querySelector(`#${inputEl.id}-err`);
+  /*вписываем в него текст ошибки*/
+  errElement.textContent = inputEl.validationMessage;
+}
+function isValid(inputEl)  {
+  showInputErr(inputEl);
 
-  function isValid(inputs){
-    if (!popupInput1.validity.valid || !popupInput2.validity.valid) {
-      validityState(inputs , false);
-    } else {
-      validityState(inputs , true);
-      return true;
-    }
-  }
+
+};
+function setValidationAttr(formElements , formSettings)  {
+    /*для каждого элемента формы...*/
+  formElements.forEach( element =>{
+    const indexOfElement = formElements.indexOf(element);
+    const elementAttrs = formSettings[indexOfElement]; 
+ /*атрибуты валидации*/
+    if(elementAttrs.requiredAttr){
+      element.required = 'required';
+    };
+    if(elementAttrs.minlengthAttr !== undefined){
+      element.setAttribute('minlength',elementAttrs.minlengthAttr);
+    };
+    if(elementAttrs.maxlengthAttr !== undefined){
+      element.setAttribute('maxlength',elementAttrs.maxlengthAttr);
+    }; 
+  });
+};
+/*formSettings это массив с атрибутами и настройками элементов формы*/
+function enableValidation(formElements , formSettings , popupSubmitBtn)  {
+  console.log(formSettings);
+  setValidationAttr(formElements , formSettings);
+  const inputList = Array.from(popupForm.getElementsByTagName('input'));
+  toggleBtnState(inputList, popupSubmitBtn);
+  inputList.forEach(inputEl =>{
+    inputEl.addEventListener('input', () => {
+      isValid(inputEl);
+      toggleBtnState(inputList , popupSubmitBtn);
+    });
+  });
+};

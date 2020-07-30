@@ -52,17 +52,11 @@
       <div class="popup__window">
         <button class="popup__close-btn" type="button"></button>
         <h2 class="popup__heading"></h2>
-        <form novalidate class="popup__input-container" name="popup-form" method="post" action="">
-          <input id="text-input1" type="text" required class="popup__input-item" placeholder="" value="" required minlength="">
-          <span id="text-input1-err" class="popup__input-error-message"></span>
-          <input id="text-input2" type="text" required class="popup__input-item" placeholder="" value="" required>
-          <span id="text-input2-err" class="popup__input-error-message"></span>
-          <button type="submit" class="popup__submit-btn">Сохранить</button>
-          <!-- понимаю, что именование id ужасны, но из-за того что я изначально делал 1 форму в html и заполнял ее при помощи js в зависимости от того что это за форма, у меня не получится обойтись малой кровью, и придется из-за этого много чего переписывать, боюсь что так я не успею сдать проект. -->
+        <form novalidate class="popup__input-container" name="popupForm" method="post" action="">
         </form>
       </div>
     </section>
-     <section class="photo-browsing">
+    <section class="photo-browsing">
       <div class="photo-browsing__browser">
         <button class="photo-browsing__close-btn" type="button"></button>
         <img class="photo-browsing__image" src="" alt="">
@@ -81,5 +75,6 @@
   <script src="./js/utils.js"></script>
   <script src="./js/validate.js"></script>
   <script src="./js/script.js"></script>
+  
 </body>
 </html>
