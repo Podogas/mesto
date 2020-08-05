@@ -2,56 +2,49 @@ const hasInvalidInput = (inputList) =>{
   const result = inputList.some(inputEl => {
     return !inputEl.validity.valid;
   })
-  return result
+  return result;
 };
-const toggleBtnState = (inputList , popupSubmitBtn) => {
+const toggleBtnState = (formSettings, inputList , popupSubmitBtn) => {
   if(hasInvalidInput(inputList)){
-    popupSubmitBtn.classList.add('popup__submit-btn_blocked');
-    popupSubmitBtn.removeEventListener('click', submitPopupForm);
+    popupSubmitBtn.classList.add(formSettings.inactiveButtonClass);
+    popupSubmitBtn.setAttribute('disabled', '');
   } else {
-    popupSubmitBtn.classList.remove('popup__submit-btn_blocked');
-    popupSubmitBtn.addEventListener('click', submitPopupForm);
+    popupSubmitBtn.classList.remove(formSettings.inactiveButtonClass);
+    popupSubmitBtn.removeAttribute('disabled');
   }
 };
-
-function  showInputErr(inputEl)  {
-  /*находим спан с ошибкой*/
-  const errElement = popupForm.querySelector(`#${inputEl.id}-err`);
+function resetInputErr(form, inputEl, errElement)  {
+  errElement.textContent = '';
+}
+function  showInputErr(form, inputEl, errElement)  {
   /*вписываем в него текст ошибки*/
   errElement.textContent = inputEl.validationMessage;
 }
-function isValid(inputEl)  {
-  showInputErr(inputEl);
-
-
+function isValid(formSettings, form, inputEl, inputList, popupSubmitBtn, errElement)  {
+  showInputErr(form, inputEl, errElement);
+  toggleBtnState(formSettings, inputList, popupSubmitBtn);
 };
-function setValidationAttr(formElements , formSettings)  {
-    /*для каждого элемента формы...*/
-  formElements.forEach( element =>{
-    const indexOfElement = formElements.indexOf(element);
-    const elementAttrs = formSettings[indexOfElement]; 
- /*атрибуты валидации*/
-    if(elementAttrs.requiredAttr){
-      element.required = 'required';
-    };
-    if(elementAttrs.minlengthAttr !== undefined){
-      element.setAttribute('minlength',elementAttrs.minlengthAttr);
-    };
-    if(elementAttrs.maxlengthAttr !== undefined){
-      element.setAttribute('maxlength',elementAttrs.maxlengthAttr);
-    }; 
-  });
-};
+
 /*formSettings это массив с атрибутами и настройками элементов формы*/
-function enableValidation(formElements , formSettings , popupSubmitBtn)  {
-  console.log(formSettings);
-  setValidationAttr(formElements , formSettings);
-  const inputList = Array.from(popupForm.getElementsByTagName('input'));
-  toggleBtnState(inputList, popupSubmitBtn);
+function enableValidation(formSettings)  {
+  const form = document.querySelector(formSettings.formSelector);
+  const inputs = form.querySelectorAll(formSettings.inputSelector);
+  const popupSubmitBtn = form.querySelector(formSettings.submitButtonSelector);
+  /*добавляем слушатели с помощью переданной функции в объекте с настройками формы,
+  для того что бы не прописывать при каждом добавлении нового попапа слушателей,
+  так же сначала удаляем эти слушатели, что бы они не перезаписывались при каждом вызове
+  enableValidation (если они конечно слушатели с одинаковыми аргументами могут перезаписываться, не нагуглил)*/
+  popupSubmitBtn.removeEventListener('click', formSettings.submitButtonAction);
+  popupSubmitBtn.addEventListener('click', formSettings.submitButtonAction);
+  /*просто переделываем псевдомассив в массив, не знаю зачем)*/
+  const inputList = Array.from(inputs);
+  toggleBtnState(formSettings, inputList, popupSubmitBtn);
   inputList.forEach(inputEl =>{
+    /*находим спан с ошибкой*/
+    const errElement = form.querySelector(`#${inputEl.id}-err`);
+    resetInputErr(form, inputEl, errElement);
     inputEl.addEventListener('input', () => {
-      isValid(inputEl);
-      toggleBtnState(inputList , popupSubmitBtn);
+      isValid(formSettings, form, inputEl, inputList, popupSubmitBtn, errElement);
     });
   });
 };

@@ -1,191 +1,134 @@
+/*получился довольно сумбурный код, думаю проблема в том что он очень много раз переписывался
+(4 раза, 3 из которых я разными способами пытался сделать динамическое добавление то всего попапа, то формы)*/
+
    /*элементы DOM*/
 const profileEditBtn = document.querySelector('.profile__edit-button');
 const profileAddBtn = document.querySelector('.profile__add-button');
+const profileNameEl = document.querySelector('.profile__name');
+const profileJobEl = document.querySelector('.profile__job');
 const photoBrowsing = document.querySelector('.photo-browsing');
 const photoBrowsingImage = photoBrowsing.querySelector('.photo-browsing__image');
 const photoBrowsingCaption = photoBrowsing.querySelector('.photo-browsing__caption');
 const photoBrowsingCloseBtn = photoBrowsing.querySelector('.photo-browsing__close-btn');
 const photoCard = document.querySelector('#photo-card').content;
+const popups = document.querySelectorAll('.popup');
 const popupEditProfileEl = document.querySelector('.popup_edit-profile');
 const popupAddPhotoEl = document.querySelector('.popup_add-photo');      
-const profileNameEl = document.querySelector('.profile__name');
-const profileJobEl = document.querySelector('.profile__job');
-const popup = document.querySelector('.popup');
-const popupForm = popup.querySelector('.popup__input-container');
-const popupCloseBtn = popup.querySelector('.popup__close-btn');
-const popupHeading = popup.querySelector('.popup__heading');
+const popupEditProfileCloseBtn = document.querySelector('.popup__close-btn_edit-profile');
+const popupEditProfileHeading = document.querySelector('.popup__heading_edit-profile');
+const profileNameInputEl = document.querySelector('#profileNameInput');
+const profileJobInputEl = document.querySelector('#profileJobInput');
+const photoNameInputEl = document.querySelector('#photoNameInput'); 
+const photoUrlInputEl = document.querySelector('#photoUrlInput');
+const popupAddPhotoCloseBtn = document.querySelector('.popup__close-btn_add-photo');
+const popupAddPhotoHeading = document.querySelector('.popup__heading_add-photo');
+const elementsContainerEl = document.querySelector('.elements');
 
-
-let formElements = [];
-let formElementsAttr = [];
-function displayPhoto (cardItem) {
-  const cardElement = photoCard.cloneNode(true);
-  /*выбираем внутри этой разметки элементы с которыми будем работать*/
-  const card = cardElement.querySelector('.element');
-  const cardImage = cardElement.querySelector('.element__image');
-  const cardCaption = cardElement.querySelector('.element__caption');
-  const deleteCard = cardElement.querySelector('.element__trash-can');
-  const likeCard = cardElement.querySelector('.element__like-button');
-  /*добавляем айди для элементов*/
-  card.id = cardItem.id;
-  /*добавляем содержимое из объекта*/
-  cardImage.setAttribute('style', `background-image: url(${cardItem.link});`);
-  cardCaption.textContent = cardItem.name;
-  if(cardItem.liked){
-    likeCard.classList.add('element__like-button_liked');
-  }
-  /*добавляем разметку на страницу*/
-  document.querySelector('.elements').prepend(cardElement);
-  
-  deleteCard.addEventListener('click', deletePhoto);
+function refreshProfile()  {
+  profileNameEl.textContent = profile.name;
+  profileJobEl.textContent = profile.job;
+}
+function saveProfile() {
+  profile.name = profileNameInputEl.value;
+  profile.job = profileJobInputEl.value;
+}
+function displayPhotoCard(bufferedCardEl, cardElement, cardItem) {
+   /*добавляем разметку на страницу*/
+  elementsContainerEl.prepend(bufferedCardEl);
+  cardElement.deleteCard.addEventListener('click', deletePhoto);
   /*поставить класс*/
-  likeCard.addEventListener('click', function(evt){
+  cardElement.likeCard.addEventListener('click', function(evt){
   evt.target.classList.toggle('element__like-button_liked');
   cardItem.liked = !cardItem.liked;
   });
-
-  cardImage.addEventListener('click', function(evt){
+  /*добавляем обработчик для режиима просмотра*/
+  cardElement.cardImage.addEventListener('click', function(evt){
     const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
     photoBrowsingImage.setAttribute('src', imageUrl);
     photoBrowsingCaption.textContent = cardItem.name;
     togglePhotoBrowser();
   })
-  /*добавляем обработчик для режиима просмотра*/
+}
+function createPhotoCard (cardItem) {
+  const bufferedCardEl = photoCard.cloneNode(true);
+  const cardElement = {
+    card: bufferedCardEl.querySelector('.element'),
+    cardImage: bufferedCardEl.querySelector('.element__image'),
+    cardCaption: bufferedCardEl.querySelector('.element__caption'),
+    deleteCard: bufferedCardEl.querySelector('.element__trash-can'),
+    likeCard: bufferedCardEl.querySelector('.element__like-button')
+  }
+  /*добавляем айди для элементов*/
+  cardElement.card.id = cardItem.id;
+  /*добавляем содержимое из объекта*/
+  cardElement.cardImage.setAttribute('style', `background-image: url(${cardItem.link});`);
+  cardElement.cardCaption.textContent = cardItem.name;
+  if(cardItem.liked){
+    cardElement.likeCard.classList.add('element__like-button_liked');
+  }
+  displayPhotoCard(bufferedCardEl, cardElement, cardItem);
 };
 /*функция которая добавляет карточки из массива каждый раз при загрузке станицы*/
-initialCards.forEach(card => displayPhoto(card));
+initialCards.forEach(card => {
+  createPhotoCard(card);
+});
 
 function togglePhotoBrowser(){
   enableEscClose();
   photoBrowsing.classList.toggle('photo-browsing_opened');
 };
-function togglePopup() {
-  popup.classList.toggle('popup_opened');
-};
-
-function addAttrToFormElems(){
-  /*для каждого элемента (которые мы уже берем из массива)*/
-  formElements.forEach(element =>{
-    /*находим индекс элемента*/
-    const indexOfElement = formElements.indexOf(element);
-    /*находим атрибуты для этого элемента из массива с атрибутами 
-    (индексы всегда будут совпадать, так как в массивы они записываются в одной и той же forEach функции)*/
-    const elementAttrs = formElementsAttr[indexOfElement];
-   /*добавляем атрибуты инпута, к сожалению проверки лучше чем с условными конструкциями я придуматьт не смог*/
-    if(elementAttrs.typeAttr !== undefined){
-      element.type = elementAttrs.typeAttr;
-    };
-    if(elementAttrs.idAttr !== undefined){
-      element.id = elementAttrs.idAttr
-    };
-    if(elementAttrs.placeholderAttr !== undefined){
-      element.placeholder = elementAttrs.placeholderAttr
-    };
-    if(elementAttrs.valueAttr !== undefined){
-      element.value = elementAttrs.valueAttr
-    };
-    /*добавляем классы по одному из массива внутри объекта атрибутов элемента*/
-    const classes = elementAttrs.classListAttr.forEach( classAttr =>{
-      element.classList.add(classAttr);
-      return classAttr;});
-    if(elementAttrs.textContent != undefined){
-      element.textContent = elementAttrs.textContent;
-    }
-  })  
+function openPopup(popupEl)  {
+  popupEl.classList.add('popup_opened');
+  enableEscClose(popupEl);
 }
-
-function generateForm(formSettings, heading){
-  /*добавляем заголовок*/
-  popupHeading.textContent = heading;
-  /*получаем название ключей (в нашем случае каждый ключ объекта это объект с информацией о создаваемом поле ввода)*/
-  const inputs = Object.keys(formSettings);
-  /*для каждого названия поля ввода выполняем следующие действия: */
-  inputs.forEach(input => {
-    /*получаем список атрибутов инпута уже как объект*/
-    const inputElAttr = formSettings[input];
-    /*сразу добавляем в массив с атрибутами элементов формы*/
-    formElementsAttr.push(inputElAttr);
-    /*создаем элемент по типу который указан*/
-    const inputEl = document.createElement(inputElAttr.elType);
-    /*вставляем в разметку */
-    popupForm.appendChild(inputEl);
-    /*проверяем есть ли сообщение об ошибке как элемент*/
-    if(inputElAttr.errElement){
-      const errElement = document.createElement('span');
-      popupForm.appendChild(errElement);
-      /*и сразу добавляем этому элементу необходимые атрибуты*/
-      errElement.classList.add('popup__input-error-message');
-      if(inputElAttr.idAttr !== undefined){
-        errElement.id = inputElAttr.idAttr+'-err';
-      };
-    };
-    /*заполняем массив элементами формы*/
-    formElements.push(inputEl);
-    });
-  /*вызываем функцию добавления атрибутов к элементам формы*/
-  addAttrToFormElems();
-  const popupSubmitBtn = popupForm.querySelector('.popup__submit-btn');
-  popupSubmitBtn.addEventListener('click' ,(evt =>{
-    evt.preventDefault();
-  }))
-  /*включаем валидацию, и передаем ей массив со всеми элементами формы, и со всеми атрибутами к этим элементам */
-  enableValidation(formElements , formElementsAttr , popupSubmitBtn);
-};  
-
-function deleteForm() {
-  while (popupForm.lastElementChild) {
-    popupForm.removeChild(popupForm.lastElementChild);
-  }
-  formElements = [];
-  formElementsAttr = [];
-}
-
-
-                                  /*EDIT PROFILE*/                                     
-function editProfile() {
-  generateForm(refreshPopupFormProfile(), 'Редактировать профиль');
-  enableEscClose();
-  togglePopup();
-};
-
-                                  /*ADD PHOTO*/
-function addPhoto() {
-  generateForm(popupFormPhoto, 'Новое место');
-  enableEscClose();
-  
-  /*popupSubmitBtn.addEventListener('click',formSubmitAddPhoto);*/
-  togglePopup();
-}
-
-function formSubmitEditProfile(){
-  const profileNameInputEl = popup.querySelector(`#${refreshPopupFormProfile().profileNameInput.idAttr}`); 
-  const profileJobInputEl = popup.querySelector(`#${refreshPopupFormProfile().profileJobInput.idAttr}`);
-  profile.name = profileNameInputEl.value;
-  profile.job = profileJobInputEl.value;
-  profileNameEl.textContent = profile.name;
-  profileJobEl.textContent = profile.job;
-  refreshPopupFormProfile();
-  closePopup();
-}
-function formSubmitAddPhoto() {
-  const objPhoto = savePhoto();
-  displayPhoto(objPhoto);
-  closePopup();
-};
-function submitPopupForm(evt){
+function closePopup(){
+  openedPopup = document.querySelector('.popup_opened');
+  openedPopup.classList.remove('popup_opened');
+  disableEscClose();
+}; 
+function formSubmitEditProfile(evt){
   evt.preventDefault();
-  if(evt.target.classList.contains('popup__submit-btn_edit-profile')){
-    formSubmitEditProfile();
-  }; 
-  if(evt.target.classList.contains('popup__submit-btn_edit-photo')){
-    formSubmitAddPhoto();
-  };
+  saveProfile();
+  refreshProfile();
+  closePopup();
 }
+                                    
+function editProfile() {
+  profileNameInputEl.value = profile.name;
+  profileJobInputEl.value = profile.job;
+  enableValidation({
+    formSelector: '.popup__input-container_edit-profile',
+    inputSelector: '.popup__input-item_edit-profile',
+    submitButtonSelector: '.popup__submit-btn_edit-profile',
+    inactiveButtonClass: 'popup__submit-btn_blocked',
+    submitButtonAction: formSubmitEditProfile
+  });
+  openPopup(popupEditProfileEl);
+};
+
+function addPhoto() {
+  photoNameInputEl.value = '';
+  photoUrlInputEl.value = '';
+  enableValidation({
+    formSelector: '.popup__input-container_add-photo',
+    inputSelector: '.popup__input-item_add-photo',
+    submitButtonSelector: '.popup__submit-btn_add-photo',
+    inactiveButtonClass: 'popup__submit-btn_blocked',
+    submitButtonAction: formSubmitAddPhoto
+  });
+  openPopup(popupAddPhotoEl);
+}
+
+function formSubmitAddPhoto(evt) {
+  evt.preventDefault();
+  const objPhoto = savePhoto();
+  createPhotoCard(objPhoto);
+  closePopup();
+};
+
 /*тут мы сохраняем фото в массив который наверное когда то потом можно будет
  отправить на сервер и данные будут сохраняться*/
 function savePhoto(){
-  const photoNameInputEl = popup.querySelector('#photoNameInput'); 
-  const photoUrlInput = popup.querySelector('#photoUrlInput');
   const newCard = {
     id: validId(),
     name: photoNameInputEl.value.trim(),
@@ -210,42 +153,39 @@ function validId(){
 }
 /*удаление фото из массива*/
 function deletePhoto(del){
-  const targetToRemove = initialCards.find(data => data.id === del.target.parentElement.id);
-  const objectToRemove = initialCards.indexOf(targetToRemove);
-  initialCards.splice(objectToRemove, 1);
   del.target.parentElement.remove();
 }
-function escClose() {
-    if(event.key === 'Escape'){
-      if(popup.classList.contains('popup_opened')){
-        closePopup();
-      };
-      if(photoBrowsing.classList.contains('photo-browsing_opened')){
-        togglePhotoBrowser();
-      };
-      document.removeEventListener('keydown' , escClose);
-    };
+function escClose(evt) {
+  if(evt.key === 'Escape'){
+    closePopup();
+  }
 };
+
 function enableEscClose()  {
   document.addEventListener('keydown' , escClose);
 }; 
-function closePopup(){
-  deleteForm();  
-  togglePopup();
+function disableEscClose()  {
+  document.removeEventListener('keydown' , escClose);
 }; 
+
+refreshProfile();
 /* Ниже обработчики событий*/
 
 photoBrowsing.addEventListener('click' , event =>{
   if (event.target.classList.contains('photo-browsing_opened')) {
     togglePhotoBrowser();
    }
-})
-popup.addEventListener('click' , event =>{
+});
+popups.forEach(popup => {
+  popup.addEventListener('click' , event =>{
   if (event.target.classList.contains('popup_opened')) {
     closePopup();
-   }
-})
+   };
+});
+});
+
 profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
-popupCloseBtn.addEventListener('click' , closePopup);
+popupEditProfileCloseBtn.addEventListener('click' , closePopup);
+popupAddPhotoCloseBtn.addEventListener('click' , closePopup);
 photoBrowsingCloseBtn.addEventListener('click' , togglePhotoBrowser);
