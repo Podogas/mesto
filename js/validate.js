@@ -13,7 +13,7 @@ const toggleBtnState = (formSettings, inputList , popupSubmitBtn) => {
     popupSubmitBtn.removeAttribute('disabled');
   }
 };
-function resetInputErr(form, inputEl, errElement)  {
+function resetInputErr(errElement)  {
   errElement.textContent = '';
 }
 function  showInputErr(form, inputEl, errElement)  {
@@ -25,24 +25,16 @@ function isValid(formSettings, form, inputEl, inputList, popupSubmitBtn, errElem
   toggleBtnState(formSettings, inputList, popupSubmitBtn);
 };
 
-/*formSettings это массив с атрибутами и настройками элементов формы*/
 function enableValidation(formSettings)  {
   const form = document.querySelector(formSettings.formSelector);
   const inputs = form.querySelectorAll(formSettings.inputSelector);
-  const popupSubmitBtn = form.querySelector(formSettings.submitButtonSelector);
-  /*добавляем слушатели с помощью переданной функции в объекте с настройками формы,
-  для того что бы не прописывать при каждом добавлении нового попапа слушателей,
-  так же сначала удаляем эти слушатели, что бы они не перезаписывались при каждом вызове
-  enableValidation (если они конечно слушатели с одинаковыми аргументами могут перезаписываться, не нагуглил)*/
-  popupSubmitBtn.removeEventListener('click', formSettings.submitButtonAction);
-  popupSubmitBtn.addEventListener('click', formSettings.submitButtonAction);
-  /*просто переделываем псевдомассив в массив, не знаю зачем)*/
   const inputList = Array.from(inputs);
+  const popupSubmitBtn = form.querySelector(formSettings.submitButtonSelector);
   toggleBtnState(formSettings, inputList, popupSubmitBtn);
   inputList.forEach(inputEl =>{
     /*находим спан с ошибкой*/
     const errElement = form.querySelector(`#${inputEl.id}-err`);
-    resetInputErr(form, inputEl, errElement);
+    resetInputErr(errElement);
     inputEl.addEventListener('input', () => {
       isValid(formSettings, form, inputEl, inputList, popupSubmitBtn, errElement);
     });

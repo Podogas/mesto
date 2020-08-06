@@ -1,5 +1,4 @@
-/*получился довольно сумбурный код, думаю проблема в том что он очень много раз переписывался
-(4 раза, 3 из которых я разными способами пытался сделать динамическое добавление то всего попапа, то формы)*/
+/*дописываю все в панике*/
 
    /*элементы DOM*/
 const profileEditBtn = document.querySelector('.profile__edit-button');
@@ -23,33 +22,33 @@ const photoUrlInputEl = document.querySelector('#photoUrlInput');
 const popupAddPhotoCloseBtn = document.querySelector('.popup__close-btn_add-photo');
 const popupAddPhotoHeading = document.querySelector('.popup__heading_add-photo');
 const elementsContainerEl = document.querySelector('.elements');
+const editProfileSubmitBtn = popupEditProfileEl.querySelector('.popup__submit-btn');
+const addPhotoSubmitBtn = popupAddPhotoEl.querySelector('.popup__submit-btn');
 
-function refreshProfile()  {
-  profileNameEl.textContent = profile.name;
-  profileJobEl.textContent = profile.job;
-}
-function saveProfile() {
-  profile.name = profileNameInputEl.value;
-  profile.job = profileJobInputEl.value;
-}
-function displayPhotoCard(bufferedCardEl, cardElement, cardItem) {
-   /*добавляем разметку на страницу*/
-  elementsContainerEl.prepend(bufferedCardEl);
-  cardElement.deleteCard.addEventListener('click', deletePhoto);
-  /*поставить класс*/
-  cardElement.likeCard.addEventListener('click', function(evt){
-  evt.target.classList.toggle('element__like-button_liked');
-  cardItem.liked = !cardItem.liked;
-  });
-  /*добавляем обработчик для режиима просмотра*/
-  cardElement.cardImage.addEventListener('click', function(evt){
-    const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
-    photoBrowsingImage.setAttribute('src', imageUrl);
-    photoBrowsingCaption.textContent = cardItem.name;
-    togglePhotoBrowser();
-  })
-}
-function createPhotoCard (cardItem) {
+const profileFormSettings = {
+    formSelector: '.popup__input-container_edit-profile',
+    inputSelector: '.popup__input-item',
+    submitButtonSelector: '.popup__submit-btn',
+    inactiveButtonClass: 'popup__submit-btn_blocked'
+  };
+const photoFormSettings = {
+    formSelector: '.popup__input-container_add-photo',
+    inputSelector: '.popup__input-item',
+    submitButtonSelector: '.popup__submit-btn',
+    inactiveButtonClass: 'popup__submit-btn_blocked'
+  };
+
+enableValidation(profileFormSettings);
+enableValidation(photoFormSettings);
+
+function enableEscClose()  {
+  document.addEventListener('keydown' , escClose);
+}; 
+function togglePhotoBrowser(){
+  enableEscClose();
+  photoBrowsing.classList.toggle('photo-browsing_opened');
+};
+function createPhotoCard() { 
   const bufferedCardEl = photoCard.cloneNode(true);
   const cardElement = {
     card: bufferedCardEl.querySelector('.element'),
@@ -58,28 +57,52 @@ function createPhotoCard (cardItem) {
     deleteCard: bufferedCardEl.querySelector('.element__trash-can'),
     likeCard: bufferedCardEl.querySelector('.element__like-button')
   }
-  /*добавляем айди для элементов*/
-  cardElement.card.id = cardItem.id;
-  /*добавляем содержимое из объекта*/
-  cardElement.cardImage.setAttribute('style', `background-image: url(${cardItem.link});`);
-  cardElement.cardCaption.textContent = cardItem.name;
-  if(cardItem.liked){
+  /*обработчики событий*/
+  cardElement.deleteCard.addEventListener('click', deletePhoto);
+  /*поставить класс*/
+  cardElement.likeCard.addEventListener('click', function(evt){
+  evt.target.classList.toggle('element__like-button_liked');
+ /* cardItem.liked = !cardItem.liked;*/
+  });
+  /*добавляем обработчик для режима просмотра*/
+  cardElement.cardImage.addEventListener('click', function(evt){
+    const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
+    photoBrowsingImage.setAttribute('src', imageUrl);
+    photoBrowsingCaption.textContent = cardElement.cardCaption.textContent;
+    togglePhotoBrowser();
+  })
+  return {card:bufferedCardEl, cardElements: cardElement};
+};
+function displayInitialCards(initialCard)  {
+  const cardSetup = createPhotoCard();
+/*добавляем содержимое из объекта*/
+  cardSetup.cardElements.cardImage.setAttribute('style', `background-image: url(${initialCard.link});`);
+  cardSetup.cardElements.cardCaption.textContent = initialCard.name;
+  if(initialCard.liked){
     cardElement.likeCard.classList.add('element__like-button_liked');
-  }
-  displayPhotoCard(bufferedCardEl, cardElement, cardItem);
+  };
+  displayPhotoCard(cardSetup.card);
 };
 /*функция которая добавляет карточки из массива каждый раз при загрузке станицы*/
-initialCards.forEach(card => {
-  createPhotoCard(card);
+initialCards.forEach((initialCard) => {
+  displayInitialCards(initialCard);
 });
-
-function togglePhotoBrowser(){
-  enableEscClose();
-  photoBrowsing.classList.toggle('photo-browsing_opened');
-};
 function openPopup(popupEl)  {
   popupEl.classList.add('popup_opened');
   enableEscClose(popupEl);
+}
+function editProfile() {
+  profileNameInputEl.value = profileNameEl.textContent;
+  profileJobInputEl.value = profileJobEl.textContent;
+  openPopup(popupEditProfileEl);
+};  
+function saveProfile() {
+  profileNameEl.textContent = profileNameInputEl.value;
+  profileJobEl.textContent = profileJobInputEl.value;
+}
+function displayPhotoCard(bufferedCardEl) {
+   /*добавляем разметку на страницу*/
+  elementsContainerEl.prepend(bufferedCardEl);
 }
 function closePopup(){
   openedPopup = document.querySelector('.popup_opened');
@@ -89,69 +112,25 @@ function closePopup(){
 function formSubmitEditProfile(evt){
   evt.preventDefault();
   saveProfile();
-  refreshProfile();
   closePopup();
 }
-                                    
-function editProfile() {
-  profileNameInputEl.value = profile.name;
-  profileJobInputEl.value = profile.job;
-  enableValidation({
-    formSelector: '.popup__input-container_edit-profile',
-    inputSelector: '.popup__input-item_edit-profile',
-    submitButtonSelector: '.popup__submit-btn_edit-profile',
-    inactiveButtonClass: 'popup__submit-btn_blocked',
-    submitButtonAction: formSubmitEditProfile
-  });
-  openPopup(popupEditProfileEl);
+function savePhoto(cardSetup){
+  cardSetup.cardElements.cardImage.setAttribute('style', `background-image: url(${photoUrlInputEl.value});`);
+  cardSetup.cardElements.cardCaption.textContent = photoNameInputEl.value;
 };
-
 function addPhoto() {
   photoNameInputEl.value = '';
   photoUrlInputEl.value = '';
-  enableValidation({
-    formSelector: '.popup__input-container_add-photo',
-    inputSelector: '.popup__input-item_add-photo',
-    submitButtonSelector: '.popup__submit-btn_add-photo',
-    inactiveButtonClass: 'popup__submit-btn_blocked',
-    submitButtonAction: formSubmitAddPhoto
-  });
   openPopup(popupAddPhotoEl);
 }
-
 function formSubmitAddPhoto(evt) {
   evt.preventDefault();
-  const objPhoto = savePhoto();
-  createPhotoCard(objPhoto);
+  const cardSetup = createPhotoCard();
+  savePhoto(cardSetup);
+  displayPhotoCard(cardSetup.card);
   closePopup();
 };
-
-/*тут мы сохраняем фото в массив который наверное когда то потом можно будет
- отправить на сервер и данные будут сохраняться*/
-function savePhoto(){
-  const newCard = {
-    id: validId(),
-    name: photoNameInputEl.value.trim(),
-    link: photoUrlInput.value.trim(),
-    liked: false
-  };
-  initialCards.push(newCard);
-  return newCard;
-}
-
-/*это функция которая генерирует уникальное id для фотографии*/
-function validId(){
-  let preGeneratedId = `photo${initialCards.length + 1}`;
-  const idList = [];
-  initialCards.forEach(data => {
-    idList.unshift(data.id);
-  })
-  while(idList.includes(preGeneratedId)){
-    preGeneratedId = preGeneratedId + 1;
-  }
-  return preGeneratedId;
-}
-/*удаление фото из массива*/
+/*удаление фото*/
 function deletePhoto(del){
   del.target.parentElement.remove();
 }
@@ -160,15 +139,10 @@ function escClose(evt) {
     closePopup();
   }
 };
-
-function enableEscClose()  {
-  document.addEventListener('keydown' , escClose);
-}; 
 function disableEscClose()  {
   document.removeEventListener('keydown' , escClose);
 }; 
 
-refreshProfile();
 /* Ниже обработчики событий*/
 
 photoBrowsing.addEventListener('click' , event =>{
@@ -183,9 +157,10 @@ popups.forEach(popup => {
    };
 });
 });
-
 profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 popupEditProfileCloseBtn.addEventListener('click' , closePopup);
+editProfileSubmitBtn.addEventListener('click' , formSubmitEditProfile);
+addPhotoSubmitBtn.addEventListener('click' , formSubmitAddPhoto);
 popupAddPhotoCloseBtn.addEventListener('click' , closePopup);
 photoBrowsingCloseBtn.addEventListener('click' , togglePhotoBrowser);

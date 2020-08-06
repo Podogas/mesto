@@ -26,9 +26,9 @@
         <div class="profile__avatar" style="background-image: url('./images/profile-avatar.jpg');"></div>
         <!-- Мне сказали что здесь можно прописывать изображение инлайн стилями -->
         <div class="profile__info">
-          <h1 class="profile__name"></h1>
+          <h1 class="profile__name">Жак-Ив Кусто</h1>
           <button class="profile__edit-button" type="button"></button>
-          <p class="profile__job"></p>
+          <p class="profile__job">Исследователь океана</p>
         </div>
         <button class="profile__add-button" type="button"></button>
       </section>
@@ -54,10 +54,10 @@
         <h2 class="popup__heading popup__heading_edit-profile">Редактировать профиль</h2>
         <form novalidate class="popup__input-container popup__input-container_edit-profile" name="popupEditProfile" method="post" action="">
           <input type="text" id="profileNameInput" placeholder="Имя" minlength="2" maxlength="40" required
-          class="popup__input-item popup__input-item_edit-profile">
+          class="popup__input-item popup__input-item_edit-profile" value=" ">
           <span class="popup__input-error-message" id="profileNameInput-err"></span>
           <input type="text" id="profileJobInput" placeholder="О себе" minlength="2" maxlength="200" required 
-          class="popup__input-item popup__input-item_edit-profile">
+          class="popup__input-item popup__input-item_edit-profile" value=" ">
           <span class="popup__input-error-message" id="profileJobInput-err"></span>
           <button type="submit" class="popup__submit-btn popup__submit-btn_edit-profile">Сохранить</button>
         </form>
@@ -69,10 +69,10 @@
         <h2 class="popup__heading popup__heading_add-photo">Новое место</h2>
         <form novalidate class="popup__input-container popup__input-container_add-photo" name="popupAddPhoto" method="post" action="">
           <input type="text" id="photoNameInput" placeholder="Название" minlength="1" maxlength="30" required 
-          class="popup__input-item popup__input-item_add-photo">
+          class="popup__input-item popup__input-item_add-photo" >
           <span class="popup__input-error-message" id="photoNameInput-err"></span>
           <input type="url" id="photoUrlInput" placeholder="Ссылка на картинку" required
-          class="popup__input-item popup__input-item_add-photo">
+          class="popup__input-item popup__input-item_add-photo" >
           <span class="popup__input-error-message" id="photoUrlInput-err"></span>
           <button type="submit" class="popup__submit-btn popup__submit-btn_add-photo">Сохранить</button>
         </form>
