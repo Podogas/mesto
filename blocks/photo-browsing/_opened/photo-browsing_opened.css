@@ -1,6 +1,0 @@
-.photo-browsing_opened  {
-  height: 100vh;
-  visibility: visible;
-  opacity: 1;
-  transition: visibility 0s, opacity .5s, height 0s 0s linear;
-}

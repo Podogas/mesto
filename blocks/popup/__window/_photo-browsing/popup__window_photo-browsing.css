@@ -1,5 +1,4 @@
-.photo-browsing__browser  {
-  position: relative;
+.popup__window_photo-browsing  {
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -10,4 +9,12 @@
   -ms-flex-direction: column;
   -o-flex-direction: column;
   flex-direction: column;
+
+  width: auto;
+  min-height: auto;
+  border-radius: 0;
+  box-sizing: border-box;
+  padding: 0;
+  background-color: #FFFFFF00;
+
 }

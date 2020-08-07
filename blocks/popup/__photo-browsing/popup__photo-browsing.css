@@ -1,8 +1,4 @@
-@import url('./__image/photo-browsing__image.css');
-@import url('./__caption/photo-browsing__caption.css');
-@import url('./__close-btn/photo-browsing__close-btn.css');
-@import url('./__browser/photo-browsing__browser.css');
-.photo-browsing {
+.popup__photo-browsing  {
   position: fixed;
   display: -webkit-flex;
   display: -moz-flex;
