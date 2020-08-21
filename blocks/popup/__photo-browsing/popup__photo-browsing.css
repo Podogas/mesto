@@ -7,7 +7,7 @@
   display: flex;
   visibility: hidden;
   opacity: 0;
-  transition: visibility .5s, opacity .5s, height .5s .5s linear;
+  transition: visibility .2s, opacity .5s, height .5s .5s linear;
   justify-content: center;
   -ms-align-items: center;
   align-items: center;

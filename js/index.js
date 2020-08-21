@@ -1,3 +1,6 @@
+import {initialCards} from './utils.js'; 
+import FormValidator from './FormValidator.js';
+import Card from './Card.js';
   /*Элементы DOM*/
 const profileEditBtn = document.querySelector('.profile__edit-button');
 const profileAddBtn = document.querySelector('.profile__add-button');
@@ -10,45 +13,68 @@ const popups = document.querySelectorAll('.popup');
 const popupCloseBtns = document.querySelectorAll('.popup__close-btn');
   /*Элементы попапа просмотра фотографий*/
 const popupPhotoBrowsingEl = document.querySelector('.popup__photo-browsing');
-const popupPhotoBrowsingImageEl = popupPhotoBrowsingEl.querySelector('.popup__image_photo-browsing');
-const popupPhotoBrowsingCaptionEl = popupPhotoBrowsingEl.querySelector('.popup__caption_photo-browsing');
+const popupPhotoBrowsingImageEl = popupPhotoBrowsingEl.querySelector('.popup__image-photo-browsing');
+const popupPhotoBrowsingCaptionEl = popupPhotoBrowsingEl.querySelector('.popup__caption-photo-browsing');
+
   /*Элементы попапа редактирования профиля*/
-const popupEditProfileEl = document.querySelector('.popup_edit-profile');
+
 const popupEditProfileFormEl = document.querySelector('.popup__input-container_edit-profile');
+const popupEditProfileEl = document.querySelector('.popup_edit-profile');
 const popupEditProfileHeadingEl = document.querySelector('.popup__heading_edit-profile');
 const profileNameInputEl = document.querySelector('#profileNameInput');
 const profileJobInputEl = document.querySelector('#profileJobInput');
   /*Элементы попапа добавления фотокарточки*/
-const popupAddPhotoEl = document.querySelector('.popup_add-photo');
 const popupAddPhotoFormEl = document.querySelector('.popup__input-container_add-photo');
+const popupAddPhotoEl = document.querySelector('.popup_add-photo');
 const popupAddPhotoHeadingEl = document.querySelector('.popup__heading_add-photo');
 const photoNameInputEl = document.querySelector('#photoNameInput'); 
 const photoUrlInputEl = document.querySelector('#photoUrlInput');
   /*Контейнер для фотокарточек*/
 const elementsContainerEl = document.querySelector('.elements');
-  /*Селекторы элементов формы для функции валидации форм*/
-const profileFormSettings = {
-    formSelector: '.popup__input-container_edit-profile',
+  /*создаем классы для валидации форм*/
+const profileFormValidation = new FormValidator(
+  {
     inputSelector: '.popup__input-item',
     submitButtonSelector: '.popup__submit-btn',
     inactiveButtonClass: 'popup__submit-btn_blocked'
-  };
-const photoFormSettings = {
-    formSelector: '.popup__input-container_add-photo',
+  },
+  popupEditProfileFormEl
+  );
+const photoFormValidation = new FormValidator(
+  {
     inputSelector: '.popup__input-item',
     submitButtonSelector: '.popup__submit-btn',
     inactiveButtonClass: 'popup__submit-btn_blocked'
-  };
-  /*Валидируем формы при загрузке страницы*/   
-enableValidation(profileFormSettings);
-enableValidation(photoFormSettings);
+  },
+    popupAddPhotoFormEl
+  );
+/*вызываем валидацию*/
+profileFormValidation.enableValidation();
+photoFormValidation.enableValidation();
 
+function formSubmitAddPhoto(evt) {
+  evt.preventDefault();
+  const data = { 
+    name: photoNameInputEl.value,
+    link: photoUrlInputEl.value 
+  };
+  const newCard =  new Card (data, '#photo-card');
+  const newCardEl = newCard.createCardElement();
+  elementsContainerEl.prepend(newCardEl);
+  closePopup();
+};
 function disableEscClose(){
   document.removeEventListener('keydown' , escClose);
 };
+function disableCloseBtns(){
+  popupCloseBtns.forEach(popupCloseBtn => {
+    popupCloseBtn.setAttribute('disabled', '');
+});
+}
 function closePopup(){
-  openedPopup = document.querySelector('.popup_opened');
-  openedPopup.classList.remove('popup_opened');
+  document.querySelector('.popup_opened')
+  .classList.remove('popup_opened');
+  disableCloseBtns();
   disableEscClose();
 };
 function escClose(evt) {
@@ -59,50 +85,15 @@ function escClose(evt) {
 function enableEscClose()  {
   document.addEventListener('keydown' , escClose);
 };
-function openPopup(popupEl)  {
-  popupEl.classList.add('popup_opened');
+function enableCloseBtns()  {
+  popupCloseBtns.forEach(popupCloseBtn => {
+    popupCloseBtn.removeAttribute('disabled');
+});
+}
+const openPopup = (popupEl) => {
+  enableCloseBtns();
   enableEscClose(popupEl);
-};
-/*удаление фото*/
-function deletePhoto(del){
-  del.target.parentElement.remove();
-};
-function displayPhotoCard(bufferedCardEl) {
-   /*добавляем разметку на страницу*/
-  elementsContainerEl.prepend(bufferedCardEl);
-};
-function createPhotoCard(name, link) { 
-  const bufferedCardEl = photoCard.cloneNode(true);
-  const cardElement = {
-    card: bufferedCardEl.querySelector('.element'),
-    cardImage: bufferedCardEl.querySelector('.element__image'),
-    cardCaption: bufferedCardEl.querySelector('.element__caption'),
-    deleteCard: bufferedCardEl.querySelector('.element__trash-can'),
-    likeCard: bufferedCardEl.querySelector('.element__like-button')
-  };
-  /*добавляем ссылку и название*/
-  cardElement.cardCaption.textContent = name;
-  cardElement.cardImage.setAttribute('style', `background-image: url(${link});`);
-  /*обработчики событий*/
-  cardElement.deleteCard.addEventListener('click', deletePhoto);
-  /*поставить класс*/
-  cardElement.likeCard.addEventListener('click', function(evt){
-  evt.target.classList.toggle('element__like-button_liked');
-  });
-  /*добавляем обработчик для режима просмотра*/
-  cardElement.cardImage.addEventListener('click', function(evt){
-    const imageUrl = evt.target.style.backgroundImage.slice(5, -2);
-    popupPhotoBrowsingImageEl.setAttribute('src', imageUrl);
-    popupPhotoBrowsingCaptionEl.textContent = cardElement.cardCaption.textContent;
-    openPopup(popupPhotoBrowsingEl);
-  });
-  return bufferedCardEl;
-};
-function formSubmitAddPhoto(evt) {
-  evt.preventDefault();
-  const card = createPhotoCard(photoNameInputEl.value, photoUrlInputEl.value);
-  displayPhotoCard(card);
-  closePopup();
+  popupEl.classList.add('popup_opened');
 };
 function saveProfile() {
   profileNameEl.textContent = profileNameInputEl.value;
@@ -116,20 +107,20 @@ function formSubmitEditProfile(evt){
 function editProfile() {
   profileNameInputEl.value = profileNameEl.textContent;
   profileJobInputEl.value = profileJobEl.textContent;
+  profileFormValidation.refreshValidation();
   openPopup(popupEditProfileEl);
-  resetPopupFormValidation(profileFormSettings);
 };
 function addPhoto() {
   popupAddPhotoFormEl.reset();
+  photoFormValidation.refreshValidation();
   openPopup(popupAddPhotoEl);
-  resetPopupFormValidation(photoFormSettings);
 };
 
 initialCards.forEach((initialCard) => {
-    const card = createPhotoCard(initialCard.name, initialCard.link);
-    displayPhotoCard(card);
+  const newCard =  new Card (initialCard, '#photo-card');
+  const newCardEl = newCard.createCardElement();
+  elementsContainerEl.prepend(newCardEl);
 });
-
 /* Ниже обработчики событий*/
 popupCloseBtns.forEach(popupCloseBtn => {
   popupCloseBtn.addEventListener('click' , closePopup)
@@ -145,4 +136,4 @@ profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 popupEditProfileFormEl.addEventListener('submit' , formSubmitEditProfile);
 popupAddPhotoFormEl.addEventListener('submit' , formSubmitAddPhoto);
-
+export {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, openPopup};
