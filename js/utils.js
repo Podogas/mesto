@@ -1,4 +1,9 @@
-export const initialCards = [
+  /*Элементы попапа просмотра фотографий*/
+const popupPhotoBrowsingEl = document.querySelector('.popup__photo-browsing');
+const popupPhotoBrowsingImageEl = popupPhotoBrowsingEl.querySelector('.popup__image-photo-browsing');
+const popupPhotoBrowsingCaptionEl = popupPhotoBrowsingEl.querySelector('.popup__caption-photo-browsing');
+
+const initialCards = [
     {
         name: 'Байкал',
         link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg',
@@ -30,3 +35,4 @@ export const initialCards = [
         liked: false
     }
 ]; 
+export {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards};

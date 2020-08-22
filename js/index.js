@@ -1,4 +1,4 @@
-import {initialCards} from './utils.js'; 
+import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards} from './utils.js'; 
 import FormValidator from './FormValidator.js';
 import Card from './Card.js';
   /*Элементы DOM*/
@@ -11,13 +11,7 @@ const photoCard = document.querySelector('#photo-card').content;
   /*Элементы попапов*/
 const popups = document.querySelectorAll('.popup');
 const popupCloseBtns = document.querySelectorAll('.popup__close-btn');
-  /*Элементы попапа просмотра фотографий*/
-const popupPhotoBrowsingEl = document.querySelector('.popup__photo-browsing');
-const popupPhotoBrowsingImageEl = popupPhotoBrowsingEl.querySelector('.popup__image-photo-browsing');
-const popupPhotoBrowsingCaptionEl = popupPhotoBrowsingEl.querySelector('.popup__caption-photo-browsing');
-
   /*Элементы попапа редактирования профиля*/
-
 const popupEditProfileFormEl = document.querySelector('.popup__input-container_edit-profile');
 const popupEditProfileEl = document.querySelector('.popup_edit-profile');
 const popupEditProfileHeadingEl = document.querySelector('.popup__heading_edit-profile');
@@ -31,23 +25,14 @@ const photoNameInputEl = document.querySelector('#photoNameInput');
 const photoUrlInputEl = document.querySelector('#photoUrlInput');
   /*Контейнер для фотокарточек*/
 const elementsContainerEl = document.querySelector('.elements');
+const defaultFormSelectors = {
+    inputSelector: '.popup__input-item',
+    submitButtonSelector: '.popup__submit-btn',
+    inactiveButtonClass: 'popup__submit-btn_blocked'
+  };
   /*создаем классы для валидации форм*/
-const profileFormValidation = new FormValidator(
-  {
-    inputSelector: '.popup__input-item',
-    submitButtonSelector: '.popup__submit-btn',
-    inactiveButtonClass: 'popup__submit-btn_blocked'
-  },
-  popupEditProfileFormEl
-  );
-const photoFormValidation = new FormValidator(
-  {
-    inputSelector: '.popup__input-item',
-    submitButtonSelector: '.popup__submit-btn',
-    inactiveButtonClass: 'popup__submit-btn_blocked'
-  },
-    popupAddPhotoFormEl
-  );
+const profileFormValidation = new FormValidator(defaultFormSelectors,popupEditProfileFormEl);
+const photoFormValidation = new FormValidator(defaultFormSelectors,popupAddPhotoFormEl);
 /*вызываем валидацию*/
 profileFormValidation.enableValidation();
 photoFormValidation.enableValidation();
@@ -66,11 +51,19 @@ function formSubmitAddPhoto(evt) {
 function disableEscClose(){
   document.removeEventListener('keydown' , escClose);
 };
+/*тут я не согласен с ревью, дело в том, что у попапов есть transition для visibility c делеем,
+поэтому если сделать даблклик по кнопке, то в консоли появится ошибка говорящая о том что нет у нас элемента с классом popup_opened
+(мне кажется что это лучше чем условные констукции в closePopup но можно и переделать функцию closePopup)*/
 function disableCloseBtns(){
   popupCloseBtns.forEach(popupCloseBtn => {
     popupCloseBtn.setAttribute('disabled', '');
 });
 }
+const openPopup = (popupEl) => {
+  enableCloseBtns();
+  enableEscClose(popupEl);
+  popupEl.classList.add('popup_opened');
+};
 function closePopup(){
   document.querySelector('.popup_opened')
   .classList.remove('popup_opened');
@@ -90,11 +83,7 @@ function enableCloseBtns()  {
     popupCloseBtn.removeAttribute('disabled');
 });
 }
-const openPopup = (popupEl) => {
-  enableCloseBtns();
-  enableEscClose(popupEl);
-  popupEl.classList.add('popup_opened');
-};
+
 function saveProfile() {
   profileNameEl.textContent = profileNameInputEl.value;
   profileJobEl.textContent = profileJobInputEl.value;
@@ -136,4 +125,4 @@ profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 popupEditProfileFormEl.addEventListener('submit' , formSubmitEditProfile);
 popupAddPhotoFormEl.addEventListener('submit' , formSubmitAddPhoto);
-export {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, openPopup};
+export {openPopup};

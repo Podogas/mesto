@@ -20,6 +20,7 @@
   display: flex;
   visibility: hidden;
   opacity: 0;
+  z-index: 1;
   transition: visibility .5s, opacity .5s, height .5s .5s linear;
   position: fixed;
   justify-content: center;
