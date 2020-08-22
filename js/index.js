@@ -1,4 +1,4 @@
-import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards} from './utils.js'; 
+import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards, openPopup} from './utils.js'; 
 import FormValidator from './FormValidator.js';
 import Card from './Card.js';
   /*Элементы DOM*/
@@ -51,37 +51,29 @@ function formSubmitAddPhoto(evt) {
 function disableEscClose(){
   document.removeEventListener('keydown' , escClose);
 };
-/*тут я не согласен с ревью, дело в том, что у попапов есть transition для visibility c делеем,
-поэтому если сделать даблклик по кнопке, то в консоли появится ошибка говорящая о том что нет у нас элемента с классом popup_opened
-(мне кажется что это лучше чем условные констукции в closePopup но можно и переделать функцию closePopup)*/
-function disableCloseBtns(){
-  popupCloseBtns.forEach(popupCloseBtn => {
-    popupCloseBtn.setAttribute('disabled', '');
-});
-}
-const openPopup = (popupEl) => {
-  enableCloseBtns();
-  enableEscClose(popupEl);
-  popupEl.classList.add('popup_opened');
+function disableCloseBtns(evt){
+  evt.target.setAttribute('disabled', '');
 };
-function closePopup(){
+
+function closePopup(evt){
   document.querySelector('.popup_opened')
   .classList.remove('popup_opened');
-  disableCloseBtns();
+  if(evt){
+    disableCloseBtns(evt);
+  };
   disableEscClose();
 };
 function escClose(evt) {
   if(evt.key === 'Escape'){
-    closePopup();
+    /*можно и не передавать false, но мне кажется это выразительнее*/
+    closePopup(false);
   };
 };
 function enableEscClose()  {
   document.addEventListener('keydown' , escClose);
 };
-function enableCloseBtns()  {
-  popupCloseBtns.forEach(popupCloseBtn => {
-    popupCloseBtn.removeAttribute('disabled');
-});
+function enableCloseBtns(closeBtn)  {
+  closeBtn.removeAttribute('disabled');
 }
 
 function saveProfile() {
@@ -125,4 +117,4 @@ profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 popupEditProfileFormEl.addEventListener('submit' , formSubmitEditProfile);
 popupAddPhotoFormEl.addEventListener('submit' , formSubmitAddPhoto);
-export {openPopup};
+export {enableCloseBtns, enableEscClose};

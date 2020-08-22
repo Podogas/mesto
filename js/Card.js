@@ -1,11 +1,11 @@
-import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl} from './utils.js';
-import {openPopup} from './index.js';
+import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, openPopup} from './utils.js';
+
 export default class Card {
   constructor(data, templateElSelector){
     this._name = data.name;
     this._link = data.link;
     this._templateEl = document.querySelector(templateElSelector);
-    this._cardEl = this._templateEl.content.cloneNode(true);
+    this._cardEl = this._templateEl.content.querySelector('.element').cloneNode(true);
     this._imageEl = this._cardEl.querySelector('.element__image');
     this._imageCaptionEl = this._cardEl.querySelector('.element__caption');
     this._deleteCardBtn = this._cardEl.querySelector('.element__trash-can');
@@ -32,11 +32,12 @@ export default class Card {
   _likeCard(){
     this._likeCardBtn.classList.toggle('element__like-button_liked');
   };
- /*Мне стыдно,  но у меня нету решения для этой проблемы, дело в том что this._cardEl это фрагмент документа #document-fragment,
-  я не понимаю как он относится к DOM и NODE, может я что то упустил,
-  но мне кажется что это похоже на какой-то сложный прекол про парсинг*/
   _deleteCard(){
-     this._deleteCardBtn.parentElement.remove();
+    this._cardEl.remove();
+   /* честно говоря, не знаю так ли надо занулять, и зачем это нужно, 
+    в статьях речь идет про какой то сборщик мусора и про то что как только область видимости пропадает, 
+    то переменные сами очищаются(тк они в области видимости функции), но я попробую найти побольше информации об этом*/
+    this._cardEl = null;
   };
   _setEventListeners(){
     this._deleteCardBtn.addEventListener('click', () => {

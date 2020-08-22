@@ -1,3 +1,9 @@
+import {enableCloseBtns, enableEscClose} from './index.js';
+const openPopup = (popupEl) => {
+  enableCloseBtns(popupEl.querySelector('.popup__close-btn'));
+  enableEscClose(popupEl);
+  popupEl.classList.add('popup_opened');
+};
   /*Элементы попапа просмотра фотографий*/
 const popupPhotoBrowsingEl = document.querySelector('.popup__photo-browsing');
 const popupPhotoBrowsingImageEl = popupPhotoBrowsingEl.querySelector('.popup__image-photo-browsing');
@@ -35,4 +41,4 @@ const initialCards = [
         liked: false
     }
 ]; 
-export {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards};
+export {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards, openPopup};
