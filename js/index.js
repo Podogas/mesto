@@ -1,4 +1,4 @@
-import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards, openPopup} from './utils.js'; 
+import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards, openPopup, closePopup} from './utils.js'; 
 import FormValidator from './FormValidator.js';
 import Card from './Card.js';
   /*Элементы DOM*/
@@ -48,33 +48,9 @@ function formSubmitAddPhoto(evt) {
   elementsContainerEl.prepend(newCardEl);
   closePopup();
 };
-function disableEscClose(){
-  document.removeEventListener('keydown' , escClose);
-};
-function disableCloseBtns(evt){
-  evt.target.setAttribute('disabled', '');
-};
 
-function closePopup(evt){
-  document.querySelector('.popup_opened')
-  .classList.remove('popup_opened');
-  if(evt){
-    disableCloseBtns(evt);
-  };
-  disableEscClose();
-};
-function escClose(evt) {
-  if(evt.key === 'Escape'){
-    /*можно и не передавать false, но мне кажется это выразительнее*/
-    closePopup(false);
-  };
-};
-function enableEscClose()  {
-  document.addEventListener('keydown' , escClose);
-};
-function enableCloseBtns(closeBtn)  {
-  closeBtn.removeAttribute('disabled');
-}
+
+
 
 function saveProfile() {
   profileNameEl.textContent = profileNameInputEl.value;
@@ -117,4 +93,3 @@ profileEditBtn.addEventListener('click', editProfile);
 profileAddBtn.addEventListener('click', addPhoto);
 popupEditProfileFormEl.addEventListener('submit' , formSubmitEditProfile);
 popupAddPhotoFormEl.addEventListener('submit' , formSubmitAddPhoto);
-export {enableCloseBtns, enableEscClose};
