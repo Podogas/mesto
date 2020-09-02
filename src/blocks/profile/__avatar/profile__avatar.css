@@ -1,4 +1,5 @@
 .profile__avatar  {
+  background-image: url('../../../images/profile-avatar.jpg');
   display: inline-block;
   background-repeat: no-repeat;
   background-size: contain;
@@ -11,4 +12,5 @@
 .profile__avatar  {
    margin-left: calc((100% - 120px) / 2);
    margin-right: calc((100% - 120px) / 2);
+}
 }
