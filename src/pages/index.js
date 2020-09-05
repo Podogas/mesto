@@ -59,6 +59,8 @@ const cardsContainer = new Section({
 cardsContainer.renderItems();
 
 /*создаем класс для формы добавления новой фотокарточки*/
+
+/*спасибо вам за помощь, это действительно очевидное решение, но вообще в упор его не видел.*/
 const popupAddPhoto = new PopupWithForm('.popup_add-photo',{
     formSubmitHandler: (inputValue) => {
     const formatedData = {
