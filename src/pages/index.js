@@ -7,28 +7,13 @@ import Card from '../components/Card.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import UserInfo from '../components/UserInfo.js';
-  /*Элементы DOM*/
-const profileEditBtn = document.querySelector('.profile__edit-button');
-const profileAddBtn = document.querySelector('.profile__add-button');
-const profileNameEl = document.querySelector('.profile__name');
-const profileJobEl = document.querySelector('.profile__job');
-/*Элементы попапа редактирования профиля*/
-const popupEditProfileFormEl = document.querySelector('.popup__input-container_edit-profile');
-const popupEditProfileEl = document.querySelector('.popup_edit-profile');
-const popupEditProfileHeadingEl = document.querySelector('.popup__heading_edit-profile');
-const profileNameInputEl = document.querySelector('#profileNameInput');
-const profileJobInputEl = document.querySelector('#profileJobInput');
-  /*Элементы попапа добавления фотокарточки*/
-const popupAddPhotoFormEl = document.querySelector('.popup__input-container_add-photo');
-const popupAddPhotoEl = document.querySelector('.popup_add-photo');
-const popupAddPhotoHeadingEl = document.querySelector('.popup__heading_add-photo');
-const photoNameInputEl = document.querySelector('#photoNameInput'); 
-const photoUrlInputEl = document.querySelector('#photoUrlInput');
-const defaultFormSelectors = {
-    inputSelector: '.popup__input-item',
-    submitButtonSelector: '.popup__submit-btn',
-    inactiveButtonClass: 'popup__submit-btn_blocked'
-  };
+import {
+  profileEditBtn, profileAddBtn, profileNameEl, profileJobEl,
+  popupEditProfileFormEl, popupEditProfileEl, popupEditProfileHeadingEl,
+  profileNameInputEl, profileJobInputEl, popupAddPhotoFormEl, popupAddPhotoEl,
+  popupAddPhotoHeadingEl, photoNameInputEl, photoUrlInputEl, defaultFormSelectors
+} from '../utils/constants.js';
+
 const profileUserInfo = new UserInfo(profileNameEl, profileJobEl);
 /*создаем классы для валидации форм*/
 const profileFormValidation = new FormValidator(defaultFormSelectors,popupEditProfileFormEl);
@@ -50,7 +35,15 @@ const popupEditProfile = new PopupWithForm('.popup_edit-profile',
 );
 /*добавляем обработчики*/
 popupEditProfile.setEventListeners();
-
+/*функция создания карточки*/
+function createNewCard(cardItem){ 
+  const bufferedCard = new Card(cardItem,'#photo-card',{
+  handleCardClick: () => {
+    popupPhotoBrowsing.open(cardItem.link, cardItem.name);
+  }
+});
+  return bufferedCard;
+};
 /*инициализируем класс для добавления карточек на страницу*/
 const cardsContainer = new Section({
  /* вот тут при инициализации items и этими данными потом и оперирует cardsContainer.renderItems()
@@ -72,22 +65,16 @@ const popupAddPhoto = new PopupWithForm('.popup_add-photo',{
       name: inputValue.photoName,
       link: inputValue.photoUrl,
     }
-    cardsContainer.renderSingleItem(formatedData);
+    const newCard = createNewCard(formatedData);
+    const newCardEl = newCard.createCardElement();
+    cardsContainer.addItem(newCardEl)
     popupAddPhoto.close();
     }
   },
 );
 /*добавляем обработчики*/
 popupAddPhoto.setEventListeners();
-/*функция создания карточки*/
-function createNewCard(cardItem){ 
-  const bufferedCard = new Card(cardItem,'#photo-card',{
-  handleCardClick: () => {
-    popupPhotoBrowsing.open(cardItem.link, cardItem.name);
-  }
-});
-  return bufferedCard;
-};
+
 function editProfile() {
   const profileInfo = profileUserInfo.getUserInfo();
     profileNameInputEl.value = profileInfo.profileName;
