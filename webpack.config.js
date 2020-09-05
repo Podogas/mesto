@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: { main: './src/index.js' },
+  entry: { main: './src/pages/index.js' },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js'
@@ -32,7 +32,10 @@ module.exports = {
       test: /\.css$/,
     // при обработке этих файлов нужно использовать
     // MiniCssExtractPlugin.loader и css-loader
-      loader:  [MiniCssExtractPlugin.loader, 'css-loader']
+      loader:  [MiniCssExtractPlugin.loader,
+      { loader: 'css-loader', options: { importLoaders: 1 } },
+      'postcss-loader',
+      ]
   }
     ]
   },
