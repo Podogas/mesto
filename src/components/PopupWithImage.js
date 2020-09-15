@@ -1,5 +1,5 @@
 import Popup from './Popup.js';
-import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl, initialCards} from '../utils/utils.js'; 
+import {popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl} from '../utils/constants.js'; 
 export default class PopupWithImage extends Popup{
   constructor(popupSelector){
     super(popupSelector);

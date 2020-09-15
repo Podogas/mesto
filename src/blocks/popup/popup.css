@@ -12,6 +12,7 @@
 @import url('./__close-btn/_photo-browsing/popup__close-btn_photo-browsing.css');
 @import url('./__image/popup__image-photo-browsing.css');
 @import url('./__caption/popup__caption-photo-browsing.css');
+@import url('./__heading/_confirm-deletion/popup__heading_confirm-deletion.css');
 .popup  {
  display: -webkit-flex;
   display: -moz-flex;

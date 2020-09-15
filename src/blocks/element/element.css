@@ -3,8 +3,9 @@
 @import url('./__caption/element__caption.css');
 @import url('./__like-button/element__like-button.css');
 @import url('./__trash-can/element__trash-can.css');
+@import url('./__like-wrapper/element__like-wrapper.css');
 @import url(./__like-button/_liked/element__like-button_liked.css);
-
+@import url('./__like-counter/element__like-counter.css');
 .element  {
   position: relative;
   width: 32.046%;

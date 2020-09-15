@@ -22,11 +22,10 @@
     <!-- profile -->
       <section class="profile">
         <div class="profile__avatar"></div>
-        <!-- Мне сказали что здесь можно прописывать изображение инлайн стилями -->
         <div class="profile__info">
-          <h1 class="profile__name">Жак-Ив Кусто</h1>
+          <h1 class="profile__name"></h1>
           <button class="profile__edit-button" type="button"></button>
-          <p class="profile__job">Исследователь океана</p>
+          <p class="profile__job"></p>
         </div>
         <button class="profile__add-button" type="button"></button>
       </section>
@@ -51,10 +50,10 @@
         <button class="popup__close-btn popup__close-btn_edit-profile" type="button"></button>
         <h2 class="popup__heading popup__heading_edit-profile">Редактировать профиль</h2>
         <form novalidate class="popup__input-container popup__input-container_edit-profile" name="popupEditProfile" method="post" action="">
-          <input type="text" name="profileName" id="profileNameInput" placeholder="Имя" minlength="2" maxlength="40" required
+          <input type="text" name="name" id="profileNameInput" placeholder="Имя" minlength="2" maxlength="40" required
           class="popup__input-item popup__input-item_edit-profile" >
           <span class="popup__input-error-message" id="profileNameInput-err"></span>
-          <input type="text" name="profileJob" id="profileJobInput" placeholder="О себе" minlength="2" maxlength="200" required 
+          <input type="text" name="about" id="profileJobInput" placeholder="О себе" minlength="2" maxlength="200" required 
           class="popup__input-item popup__input-item_edit-profile" >
           <span class="popup__input-error-message" id="profileJobInput-err"></span>
           <button type="submit" class="popup__submit-btn popup__submit-btn_edit-profile">Сохранить</button>
@@ -83,15 +82,39 @@
         <span class="popup__caption-photo-browsing"></span>
       </div>
     </section>
+    <section class="popup popup_confirm-deletion">
+      <div class="popup__window">
+        <form novalidate class="popup__input-container popup__input-container_confirm-deletion" name="popupConfirmDeletion" method="post" action="">
+          <button class="popup__close-btn popup__close-btn_confirm-deletion" type="button"></button>
+          <h2 class="popup__heading popup__heading_confirm-deletion">Вы уверены?</h2>
+          <button type="submit" class="popup__submit-btn popup__submit-btn_confirm-deletion">Да</button>
+        </form>  
+      </div>
+    </section>
+     <section class="popup popup_edit-avatar">
+      <div class="popup__window">
+        <button class="popup__close-btn popup__close-btn_edit-avatar" type="button"></button>
+        <h2 class="popup__heading popup__heading_edit-avatar">Обновить аватар</h2>
+        <form novalidate class="popup__input-container popup__input-container_edit-avatar" name="popupEditAvatar" method="post" action="">
+          <input type="url" name="avatarUrl" id="avatarUrlInput" placeholder="Ссылка на картинку" required
+          class="popup__input-item popup__input-item_edit-avatar" >
+          <span class="popup__input-error-message" id="avatarUrlInput-err"></span>
+          <button type="submit" class="popup__submit-btn popup__submit-btn_edit-avatar">Сохранить</button>
+        </form>
+      </div>      
+    </section>
   </div>
    <template id="photo-card">
       <article class="element">
-        <button class="element__trash-can" type="button"></button>
+       <!--  <button class="element__trash-can" type="button"></button> -->
         <div class="element__image-wrap">
           <img class="element__image">
         </div>
         <h3 class="element__caption"></h3>
-        <button class="element__like-button" type="button"></button>
+        <div class="element__like-wrapper">
+          <button class="element__like-button" type="button"></button>
+          <span class="element__like-counter"></span>
+        </div>
       </article>
     </template>
   </body>

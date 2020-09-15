@@ -1,16 +1,16 @@
 export default class UserInfo{
-  constructor(profileNameEl, profileJobEl){
+  constructor(profileNameEl, profileJobEl, profileAvatarEl){
     this._profileNameEl = profileNameEl;
     this._profileJobEl = profileJobEl;
-    this._userInfo = {};
+    this._profileAvatarEl = profileAvatarEl;
   }
-  getUserInfo(){
-    this._userInfo.profileName = this._profileNameEl.textContent;
-    this._userInfo.profileJob = this._profileJobEl.textContent;
-    return this._userInfo;
+
+  setUserInfo(data){
+    this._profileNameEl.textContent = data.name;
+    this._profileJobEl.textContent = data.about;
+
   }
-  setUserInfo(formValues){
-    this._profileNameEl.textContent = formValues.profileName;
-    this._profileJobEl.textContent = formValues.profileJob;
+  setUserAvatar(data){
+    this._profileAvatarEl.style.cssText = `background-image:url(${data.avatar})`;
   }
 }
