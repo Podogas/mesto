@@ -17,11 +17,18 @@ module.exports = {
       },
     // добавили правило для обработки файлов
     {
-      // регулярное выражение, которое ищет все файлы с такими расширениями
-      test: /\.(ttf|eot|svg|otf|gif|jpg|ico|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      // images
+      test: /\.(svg|otf|gif|jpg|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       // при обработке этих файлов нужно использовать file-loader
-      loader: 'file-loader'
+      loader: 'file-loader?name=./images/[name].[ext]'
     },
+    {
+          //fonts
+      test: /\.(ttf|eot|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      // при обработке этих файлов нужно использовать file-loader
+      loader: 'file-loader?name=./vendor/[name].[ext]',
+    },
+
     // аналогично добавьте правило для работы с html
     {
       test: /\.html$/,

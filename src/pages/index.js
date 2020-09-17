@@ -15,10 +15,11 @@ import {
   popupAddPhotoHeadingEl, photoNameInputEl, photoUrlInputEl, defaultFormSelectors,
   popupPhotoBrowsingEl, popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl
 } from '../utils/constants.js';
+import {changeTextContent} from '../utils/utils.js';
 /*инициализируем класс для пользовательской информации*/
 const profileUserInfo = new UserInfo(profileNameEl, profileJobEl, profileAvatarEl);
 /*инициализируем класс для режима просмотра фото*/
-const popupPhotoBrowsing = new PopupWithImage('.popup__photo-browsing');
+const popupPhotoBrowsing = new PopupWithImage('.popup__photo-browsing', {popupPhotoBrowsingImageEl, popupPhotoBrowsingCaptionEl});
 /*инициализируем классы для валидации форм , а вызовем их в finally mestoApi.getPageData()
  когда все уже будет подгружено и все экземпляры классов будут созданы*/
 const profileFormValidation = new FormValidator(defaultFormSelectors,popupEditProfileFormEl);
@@ -32,23 +33,31 @@ const mestoApi = new Api({
     'Content-Type': 'application/json'
   }
 });
-/*Сначала мы получаем всю необходимую информацию, и уже внутри выполняем все что зависит он данных с сервера*/
-  mestoApi.getPageData().then(pageData =>{
+/*Сначала мы получаем всю необходимую информацию, и уже внутри выполняем все что зависит от данных с сервера*/
+ mestoApi.getPageData().then(pageData =>{
     /*деструктурируем полученный массив*/
     const [userInfoData, initialCardsData] = pageData;
 
     const popupEditAvatar = new PopupWithForm('.popup_edit-avatar',{
       formSubmitHandler: (inputValue) => {
-        popupEditAvatar._submitBtn.textContent = 'Сохранение...';
+        /*честно говоря не совсем понял в чем смысл, если мы по факту дублируем встроенный метод textContent*/
+        changeTextContent(popupEditAvatar._submitBtn,'Сохранение...');
         mestoApi.patchAvatar(inputValue.avatarUrl)
         .then(res => {
           profileUserInfo.setUserAvatar({
             avatar: res.avatar
           });
+          userInfoData.avatar = res.avatar
+        })
+        .then( res =>  { 
+          popupEditAvatar.close()
+
+        })
+        .catch((err) => {
+          mestoApi.consoleError(err, 'Не удалось обновить аватар');
         })
         .finally( res => {
-          popupEditAvatar.close();
-          popupEditAvatar._submitBtn.textContent = 'Сохранить'
+          changeTextContent(popupEditAvatar._submitBtn, 'Сохранить');
         })
       }
     })
@@ -69,7 +78,7 @@ const mestoApi = new Api({
       renderer: (cardItem) => {
         const newCardEl = createNewCard(cardItem)
         .createCardElement();
-        cardsContainer.addItem(newCardEl);
+        cardsContainer.addItem(newCardEl, true);
         } 
     },
     '.elements'
@@ -78,14 +87,18 @@ const mestoApi = new Api({
 
           /*инициализируем класс для формы подтверждения удаления*/
     const popupConfirmDeletion = new PopupWithButton('.popup_confirm-deletion',{
-        formSubmitHandler: (cardData) => {
-          popupConfirmDeletion.close();
-          mestoApi.deleteCard(cardData.cardId);
-          cardData.cardEl.remove();
-          cardData.cardEl == null;
-
+        formSubmitHandler: (cardData, cardClass) => {
+          mestoApi.deleteCard(cardData.cardId)
+          .then(()=> {
+           cardClass.removeCard();
+          })
+          .then(() =>  { 
+            popupConfirmDeletion.close()
+          })
+          .catch((err) => {
+            mestoApi.consoleError(err, 'Не удалось удалить карточку')
+          })
         },
-
       },
     );
         /*добавляем обработчики*/    
@@ -102,14 +115,16 @@ const mestoApi = new Api({
       },
       handleDeleteIconClick: (cardData) => {
         popupConfirmDeletion.open();
-        popupConfirmDeletion.handleCardToDelete(cardData);
+        popupConfirmDeletion.handleCardToDelete(cardData, bufferedCard);
       },
       handleCardLike: (cardId, method) => {
-        mestoApi.like(cardId, method).then(
-            res => {
-            bufferedCard._checkLikeStatus(res.likes);
-            }
-          )
+        mestoApi.like(cardId, method)
+        .then(res => {
+            bufferedCard.cardIsLiked(res.likes);
+        })
+        .catch((err) => {
+          mestoApi.consoleError(err, 'Не удалось поставить/убрать лайк');
+        })
       }
 
 
@@ -121,16 +136,23 @@ const mestoApi = new Api({
     const popupEditProfile = new PopupWithForm('.popup_edit-profile',
       {
         formSubmitHandler: (inputValue) => {
-          popupEditProfile._submitBtn.textContent = 'Сохранение...';
+          changeTextContent(popupEditProfile._submitBtn,'Сохранение...');
           /*патчим информацию на сервер*/
           mestoApi.patchUserInfo(inputValue)
           .then(data => {
             /*устанавливаем значения инпутов в элементы*/
             profileUserInfo.setUserInfo(data);
+            userInfoData.name = data.name;
+            userInfoData.about = data.about;
           })
+          .then( res =>  { 
+            popupEditProfile.close();
+          })
+          .catch((err) => {
+            mestoApi.consoleError(err, 'Не удалось обновить профиль')
+           })
           .finally(res => {
-           popupEditProfile._submitBtn.textContent = 'Сохранить';
-           popupEditProfile.close();
+           changeTextContent(popupEditProfile._submitBtn,'Сохранить');
           })
           ;
         }
@@ -141,7 +163,7 @@ const mestoApi = new Api({
     /*инициализируем класс для формы добавления новой фотокарточки*/
     const popupAddPhoto = new PopupWithForm('.popup_add-photo',{
         formSubmitHandler: (inputValue) => {
-        popupAddPhoto._submitBtn.textContent = 'Сохранение...';
+        changeTextContent(popupAddPhoto._submitBtn,'Сохранение...');
         const formatedData = {
           name: inputValue.photoName,
           link: inputValue.photoUrl,
@@ -150,11 +172,16 @@ const mestoApi = new Api({
         .then(res => {
           const newCardEl = createNewCard(res)
           .createCardElement();
-          cardsContainer.addItem(newCardEl);
-          })
+          cardsContainer.addItem(newCardEl, false);
+        })
+        .then( res =>  { 
+            popupAddPhoto.close();
+        })
+        .catch((err) => {
+          mestoApi.consoleError(err, 'Не удалось добавить карточку')
+        })
         .finally(res => {
-           popupAddPhoto._submitBtn.textContent = 'Сохранить';
-           popupAddPhoto.close();
+          changeTextContent(popupAddPhoto._submitBtn,'Сохранить');
           });
         }
       },
@@ -184,7 +211,11 @@ const mestoApi = new Api({
 
 
 
-}).finally( ()=> {
+})
+.catch((err) => {
+      mestoApi.consoleError(err, 'Не получилось загрузить данные с сервера')
+    })
+.finally( ()=> {
   /*вызываем валидацию именно тут, потому что в этот момент страница готова*/
   profileFormValidation.enableValidation();
   photoFormValidation.enableValidation();

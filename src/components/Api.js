@@ -3,11 +3,14 @@ export default class Api{
     this._url = config.baseUrl;
     this._headers = config.headers;
   }
+consoleError(err, message){
+  console.error(`${message} ${err}`);
+}
 _checkResponse(res){
   if(res.ok){
         return res.json();
       } else {
-        return Promise.reject(`Ошибка: ${res.status}`);
+        return Promise.reject(new Error(res.status));
       }
 }
 /*
@@ -21,11 +24,7 @@ getInitialCards(){
     .then(res => 
       this._checkResponse(res)
     )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
 };
-
 /*
 метод для получения информации о пользователе с сервера
  */
@@ -37,10 +36,6 @@ getUserInfo(){
     .then(res => 
       this._checkResponse(res)
     )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
-
 };
 getPageData(){
   return Promise.all([this.getUserInfo(), this.getInitialCards()])
@@ -57,9 +52,6 @@ patchUserInfo(dataToPatch){
   .then(res => 
       this._checkResponse(res)
     )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
 };
 postNewCard(dataToPost){
   return fetch(`${this._url}/cards`, {
@@ -69,13 +61,10 @@ postNewCard(dataToPost){
       name: dataToPost.name,
       link: dataToPost.link
     })}
-  )
+   )
   .then(res => 
       this._checkResponse(res)
-    )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
+  )
 };
 deleteCard(cardId){
   return fetch(`${this._url}/cards/${cardId}`, {
@@ -85,10 +74,7 @@ deleteCard(cardId){
   )
   .then(res => 
       this._checkResponse(res)
-    )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
+  )
 };
 like(cardId, method){
   return fetch(`${this._url}/cards/likes/${cardId}`, {
@@ -99,12 +85,8 @@ like(cardId, method){
   .then(res => 
       this._checkResponse(res)
     )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });
 };  
 patchAvatar(url){
-  console.log(url)
   return fetch(`${this._url}/users/me/avatar`, {
     headers: this._headers,
     method: 'PATCH',
@@ -113,10 +95,7 @@ patchAvatar(url){
   )
   .then(res => 
       this._checkResponse(res)
-    )
-    .catch((err) => {
-      console.error(`УСЁ ПОГАНО - ${err}`);
-    });  
+    )  
 }
 
 };

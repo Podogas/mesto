@@ -9,8 +9,12 @@ export default class Section {
     this._renderer(item);
     })
   }
-  /*для универсальности я бы назвал этот метод prepend а не addItem, но тут видимо это не потребуется*/
-  addItem(element){
-    this._container.prepend(element);
+  addItem(element, isArray){
+    if (isArray) {
+      this._container.append(element);
+    } else {
+      this._container.prepend(element);
+    }
+    
   }
 }
